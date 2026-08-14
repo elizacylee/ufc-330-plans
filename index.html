@@ -36,7 +36,19 @@
     background-repeat: no-repeat; background-position: center 46%;
     background-size: min(88vmin, 640px); opacity: .07;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon points='30,4 70,4 96,30 96,70 70,96 30,96 4,70 4,30' fill='none' stroke='%23E0242B' stroke-width='0.7'/%3E%3Cpolygon points='34,10 66,10 90,34 90,66 66,90 34,90 10,66 10,34' fill='none' stroke='%23E0242B' stroke-width='0.4'/%3E%3C/svg%3E");
+    animation: breathe 7s ease-in-out infinite;
   }
+  @keyframes breathe {
+    0%, 100% { opacity: .05; transform: scale(1); }
+    50%      { opacity: .11; transform: scale(1.015); }
+  }
+  .track .fill { position: relative; }
+  .track .fill::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.55), transparent);
+    animation: shimmer 2.4s ease-in-out infinite;
+  }
+  @keyframes shimmer { 0% { transform: translateX(-100%); } 60%, 100% { transform: translateX(100%); } }
   .stage { width: 100%; max-width: 540px; display: flex; flex-direction: column; align-items: center; gap: 16px; }
   .masthead {
     display: flex; align-items: center; gap: 10px;
@@ -165,10 +177,9 @@
 <canvas class="confetti" id="confetti" aria-hidden="true"></canvas>
 
 <main class="stage">
-  <div class="masthead"><span class="oct">◆</span> <span class="tag">UFC 330</span> Fight Night</div>
+  <div class="masthead"><span class="oct">◆</span> <span class="tag">UFC 330</span></div>
   <div class="track" aria-hidden="true"><span class="fill" id="fill"></span></div>
   <section class="card" id="card" role="group" aria-live="polite"></section>
-  <p class="footer">no bad picks, it's all main card</p>
 </main>
 
 <script>
