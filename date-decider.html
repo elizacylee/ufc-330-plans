@@ -1,3 +1,11 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#F4F4F2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#151517" media="(prefers-color-scheme: dark)">
 <title>The Plan Picker</title>
 <style>
   /* ---------- Tokens (neutral) ---------- */
@@ -25,15 +33,23 @@
     --accent:#5AAE97; --accent-deep:#7FC7B2; --shadow:0,0,0;
   }
 
-  * { box-sizing: border-box; }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html { -webkit-text-size-adjust: 100%; }
+
   body {
-    margin: 0; min-height: 100vh;
+    margin: 0;
+    min-height: 100vh;
+    min-height: 100dvh;                 /* handles the mobile browser bars */
     background: var(--ground); color: var(--ink);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    padding: 28px 20px 40px; -webkit-font-smoothing: antialiased;
+    /* extra padding respects the notch / home-indicator safe areas */
+    padding: calc(24px + env(safe-area-inset-top)) calc(18px + env(safe-area-inset-right))
+             calc(32px + env(safe-area-inset-bottom)) calc(18px + env(safe-area-inset-left));
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;                 /* the dodging "no" can never cause sideways scroll */
   }
-  .stage { width: 100%; max-width: 540px; display: flex; flex-direction: column; align-items: center; gap: 22px; }
+  .stage { width: 100%; max-width: 540px; display: flex; flex-direction: column; align-items: center; gap: 20px; }
 
   .trail { display: flex; gap: 8px; align-items: center; height: 12px; }
   .trail .pip { width: 26px; height: 4px; border-radius: 2px; background: var(--line); transition: background .35s ease; }
@@ -41,72 +57,83 @@
 
   .card {
     width: 100%; background: var(--surface); border: 1px solid var(--line);
-    border-radius: 16px; padding: 34px 30px 30px;
+    border-radius: 16px; padding: 32px 28px 28px;
     box-shadow: 0 18px 44px -28px rgba(var(--shadow), .5);
   }
   .eyebrow { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; font-weight: 700; color: var(--ink-soft); margin: 0 0 14px; }
-  .question { font-size: clamp(23px, 5.2vw, 30px); font-weight: 700; line-height: 1.22; letter-spacing: -0.02em; text-wrap: balance; margin: 0 0 8px; }
-  .sub { color: var(--ink-soft); font-size: 14.5px; line-height: 1.55; margin: 0 0 24px; text-wrap: pretty; }
+  .question { font-size: clamp(22px, 6.2vw, 30px); font-weight: 700; line-height: 1.22; letter-spacing: -0.02em; text-wrap: balance; margin: 0 0 8px; }
+  .sub { color: var(--ink-soft); font-size: 15px; line-height: 1.55; margin: 0 0 22px; text-wrap: pretty; }
 
   .options { display: flex; flex-direction: column; gap: 10px; }
   .opt {
-    appearance: none; text-align: left; font: inherit; font-size: 15.5px; font-weight: 600;
+    appearance: none; text-align: left; font: inherit; font-size: 16px; font-weight: 600;
     color: var(--ink); background: var(--surface-2); border: 1.5px solid transparent;
-    border-radius: 11px; padding: 15px 16px; cursor: pointer;
+    border-radius: 12px; padding: 16px; min-height: 56px; cursor: pointer;
     display: flex; align-items: center; gap: 12px;
-    transition: transform .14s ease, border-color .14s ease;
+    touch-action: manipulation;         /* kills the 300ms tap delay + double-tap zoom */
+    transition: transform .14s ease, border-color .14s ease, background .14s ease;
   }
-  .opt .emoji { font-size: 19px; line-height: 1; }
+  .opt .emoji { font-size: 20px; line-height: 1; flex: none; }
   .opt:hover, .opt:focus-visible { border-color: var(--accent); transform: translateY(-1px); outline: none; }
   .opt:focus-visible { box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 26%, transparent); }
-  .opt:active { transform: translateY(0); }
+  .opt:active { transform: scale(.99); background: color-mix(in srgb, var(--accent) 12%, var(--surface-2)); }
 
   .swap-in { animation: swapIn .34s cubic-bezier(.2,.7,.2,1) both; }
   .swap-out { animation: swapOut .24s ease both; }
   @keyframes swapIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
   @keyframes swapOut { from { opacity: 1; } to { opacity: 0; transform: translateY(-8px); } }
 
-  .back { margin-top: 20px; background: none; border: none; color: var(--ink-soft); font: inherit; font-size: 13.5px; cursor: pointer; padding: 4px 0; }
+  .back { margin-top: 18px; background: none; border: none; color: var(--ink-soft); font: inherit; font-size: 14px; cursor: pointer; padding: 8px 0; touch-action: manipulation; }
   .back:hover { color: var(--accent); }
   .back[hidden] { display: none; }
 
-  .recap { display: flex; flex-wrap: wrap; gap: 8px; margin: 2px 0 22px; }
-  .chip { background: var(--surface-2); color: var(--ink); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; font-size: 12.5px; font-weight: 600; }
-  .plan-line { font-size: 16px; line-height: 1.5; color: var(--ink); margin: 0 0 24px; text-wrap: pretty; }
+  .recap { display: flex; flex-wrap: wrap; gap: 8px; margin: 2px 0 20px; }
+  .chip { background: var(--surface-2); color: var(--ink); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; font-size: 13px; font-weight: 600; }
+  .plan-line { font-size: 16px; line-height: 1.5; color: var(--ink); margin: 0 0 22px; text-wrap: pretty; }
   .plan-line b { font-weight: 700; color: var(--accent-deep); }
 
-  .ask-zone { position: relative; min-height: 70px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .ask-zone { position: relative; min-height: 76px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
   .btn-yes {
-    appearance: none; font: inherit; font-weight: 700; font-size: 16px; color: #fff;
-    background: var(--accent); border: none; border-radius: 11px; padding: 15px 26px; cursor: pointer;
+    appearance: none; font: inherit; font-weight: 700; font-size: 17px; color: #fff;
+    background: var(--accent); border: none; border-radius: 12px; padding: 16px 26px; min-height: 54px; cursor: pointer;
+    touch-action: manipulation;
     box-shadow: 0 10px 24px -12px var(--accent-deep); transition: transform .16s ease, background .16s ease;
   }
   .btn-yes:hover, .btn-yes:focus-visible { transform: scale(1.04); background: var(--accent-deep); outline: none; }
   .btn-no {
-    appearance: none; font: inherit; font-weight: 600; font-size: 14.5px; color: var(--ink-soft);
-    background: var(--surface-2); border: 1.5px solid var(--line); border-radius: 11px;
-    padding: 12px 20px; cursor: pointer; transition: transform .12s ease, font-size .2s ease, padding .2s ease;
+    appearance: none; font: inherit; font-weight: 600; font-size: 15px; color: var(--ink-soft);
+    background: var(--surface-2); border: 1.5px solid var(--line); border-radius: 12px;
+    padding: 13px 20px; cursor: pointer; touch-action: manipulation;
+    transition: transform .12s ease, font-size .2s ease, padding .2s ease;
   }
 
   .yay { text-align: left; }
-  .yay .big { font-size: clamp(26px, 6vw, 36px); font-weight: 700; letter-spacing: -0.02em; line-height: 1.15; margin: 4px 0 12px; text-wrap: balance; }
+  .yay .big { font-size: clamp(26px, 7vw, 36px); font-weight: 700; letter-spacing: -0.02em; line-height: 1.15; margin: 4px 0 12px; text-wrap: balance; }
   .yay p { color: var(--ink-soft); font-size: 15px; line-height: 1.6; margin: 0; max-width: 44ch; }
   .yay .seal { display: inline-block; margin: 20px 0 2px; font-size: 14px; font-weight: 700; color: var(--accent-deep); letter-spacing: .02em; }
   .restart {
-    margin-top: 26px; appearance: none; font: inherit; font-size: 13.5px; font-weight: 600;
+    margin-top: 24px; appearance: none; font: inherit; font-size: 14px; font-weight: 600;
     color: var(--ink-soft); background: none; border: 1px solid var(--line); border-radius: 999px;
-    padding: 9px 16px; cursor: pointer;
+    padding: 11px 18px; min-height: 44px; cursor: pointer; touch-action: manipulation;
   }
   .restart:hover { color: var(--accent); border-color: var(--accent); }
 
   canvas.confetti { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
-  .footer { color: var(--ink-soft); font-size: 12px; opacity: .85; text-align: center; }
+  .footer { color: var(--ink-soft); font-size: 12px; opacity: .85; text-align: center; padding: 0 8px; }
+
+  /* Small phones: tighten spacing so it never needs scrolling to answer */
+  @media (max-width: 380px) {
+    .card { padding: 26px 20px 22px; }
+    .opt { padding: 14px; min-height: 52px; }
+  }
 
   @media (prefers-reduced-motion: reduce) {
     * { animation-duration: .001ms !important; transition-duration: .001ms !important; }
     .btn-yes:hover { transform: none; }
   }
 </style>
+</head>
+<body>
 
 <canvas class="confetti" id="confetti" aria-hidden="true"></canvas>
 
@@ -450,3 +477,5 @@
   renderNode("start", false);
 })();
 </script>
+</body>
+</html>
