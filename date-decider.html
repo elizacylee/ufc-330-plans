@@ -1,0 +1,690 @@
+<title>The Date Decider</title>
+<style>
+  /* ---------- Tokens ---------- */
+  :root {
+    --ground:      #FDF4F1;
+    --surface:     #FFFFFF;
+    --surface-2:   #FBEBE9;
+    --ink:         #2A1B2E;
+    --ink-soft:    #6E5568;
+    --line:        #EBD7D3;
+    --rose:        #E85D75;
+    --rose-deep:   #C7405C;
+    --gold:        #F0B429;
+    --gold-deep:   #C98A0E;
+    --shadow:      42, 27, 46;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:    #16101A;
+      --surface:   #241A2A;
+      --surface-2: #2E2135;
+      --ink:       #F6E9F0;
+      --ink-soft:  #B9A2B7;
+      --line:      #3A2C41;
+      --rose:      #FF7E93;
+      --rose-deep: #FF9FB0;
+      --gold:      #F6C34A;
+      --gold-deep: #FFD873;
+      --shadow:    0, 0, 0;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground:    #16101A;
+    --surface:   #241A2A;
+    --surface-2: #2E2135;
+    --ink:       #F6E9F0;
+    --ink-soft:  #B9A2B7;
+    --line:      #3A2C41;
+    --rose:      #FF7E93;
+    --rose-deep: #FF9FB0;
+    --gold:      #F6C34A;
+    --gold-deep: #FFD873;
+    --shadow:    0, 0, 0;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+      radial-gradient(120% 90% at 12% -8%, color-mix(in srgb, var(--rose) 14%, transparent), transparent 60%),
+      radial-gradient(120% 90% at 92% 108%, color-mix(in srgb, var(--gold) 14%, transparent), transparent 60%),
+      var(--ground);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 28px 20px 40px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .stage {
+    width: 100%;
+    max-width: 560px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 22px;
+  }
+
+  /* ---------- Progress trail ---------- */
+  .trail {
+    display: flex;
+    gap: 9px;
+    align-items: center;
+    height: 16px;
+  }
+  .trail .pip {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--line);
+    transition: transform .35s ease, background .35s ease;
+  }
+  .trail .pip.done { background: var(--rose); }
+  .trail .pip.here { background: var(--rose); transform: scale(1.5); }
+
+  /* ---------- Card ---------- */
+  .card {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    padding: 38px 34px 34px;
+    box-shadow: 0 24px 60px -30px rgba(var(--shadow), .55);
+    position: relative;
+  }
+  .eyebrow {
+    font-size: 12px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--rose);
+    margin: 0 0 14px;
+  }
+  .question {
+    font-family: Georgia, "Times New Roman", serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(26px, 6vw, 36px);
+    line-height: 1.18;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+    margin: 0 0 8px;
+  }
+  .sub {
+    color: var(--ink-soft);
+    font-size: 15px;
+    line-height: 1.5;
+    margin: 0 0 26px;
+    text-wrap: pretty;
+  }
+
+  .options { display: flex; flex-direction: column; gap: 12px; }
+  .opt {
+    appearance: none;
+    text-align: left;
+    font: inherit;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+    background: var(--surface-2);
+    border: 1.5px solid transparent;
+    border-radius: 14px;
+    padding: 16px 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    transition: transform .16s ease, border-color .16s ease, background .16s ease;
+  }
+  .opt .emoji { font-size: 22px; line-height: 1; }
+  .opt:hover, .opt:focus-visible {
+    border-color: var(--rose);
+    transform: translateY(-2px);
+    outline: none;
+  }
+  .opt:focus-visible { box-shadow: 0 0 0 4px color-mix(in srgb, var(--rose) 28%, transparent); }
+  .opt:active { transform: translateY(0); }
+
+  /* ---------- Transitions ---------- */
+  .swap-in { animation: swapIn .42s cubic-bezier(.2,.7,.2,1) both; }
+  .swap-out { animation: swapOut .28s ease both; }
+  @keyframes swapIn {
+    from { opacity: 0; transform: translateY(14px) scale(.985); }
+    to   { opacity: 1; transform: none; }
+  }
+  @keyframes swapOut {
+    from { opacity: 1; }
+    to   { opacity: 0; transform: translateY(-10px); }
+  }
+
+  .back {
+    margin-top: 22px;
+    background: none;
+    border: none;
+    color: var(--ink-soft);
+    font: inherit;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 4px 0;
+  }
+  .back:hover { color: var(--rose); }
+  .back[hidden] { display: none; }
+
+  /* ---------- Finale ---------- */
+  .recap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 4px 0 26px;
+  }
+  .chip {
+    background: color-mix(in srgb, var(--gold) 18%, var(--surface));
+    color: var(--ink);
+    border: 1px solid color-mix(in srgb, var(--gold) 40%, transparent);
+    border-radius: 999px;
+    padding: 7px 13px;
+    font-size: 13px;
+    font-weight: 600;
+    animation: swapIn .5s both;
+  }
+  .plan-line {
+    font-family: Georgia, serif;
+    font-style: italic;
+    font-size: 18px;
+    line-height: 1.5;
+    color: var(--ink);
+    margin: 0 0 26px;
+    text-wrap: pretty;
+  }
+  .plan-line b { font-style: normal; font-weight: 700; color: var(--rose-deep); }
+
+  .ask-zone {
+    position: relative;
+    min-height: 76px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .btn-yes {
+    appearance: none;
+    font: inherit;
+    font-weight: 800;
+    font-size: 18px;
+    color: #fff;
+    background: linear-gradient(135deg, var(--rose), var(--rose-deep));
+    border: none;
+    border-radius: 14px;
+    padding: 16px 30px;
+    cursor: pointer;
+    box-shadow: 0 12px 28px -10px var(--rose-deep);
+    transition: transform .18s ease, box-shadow .18s ease;
+  }
+  .btn-yes:hover, .btn-yes:focus-visible {
+    transform: scale(1.06);
+    outline: none;
+    box-shadow: 0 16px 34px -10px var(--rose-deep);
+  }
+  .btn-no {
+    appearance: none;
+    font: inherit;
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--ink-soft);
+    background: var(--surface-2);
+    border: 1.5px solid var(--line);
+    border-radius: 14px;
+    padding: 13px 22px;
+    cursor: pointer;
+    transition: transform .12s ease, font-size .2s ease, padding .2s ease;
+  }
+
+  /* ---------- Yes! screen ---------- */
+  .yay { text-align: center; }
+  .yay .big {
+    font-family: Georgia, serif;
+    font-style: italic;
+    font-size: clamp(30px, 8vw, 46px);
+    line-height: 1.1;
+    margin: 6px 0 14px;
+    text-wrap: balance;
+  }
+  .yay p { color: var(--ink-soft); font-size: 16px; line-height: 1.6; margin: 0 auto; max-width: 40ch; }
+  .yay .seal {
+    display: inline-block;
+    margin: 22px 0 4px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--gold-deep);
+    letter-spacing: .04em;
+  }
+  canvas.confetti {
+    position: fixed; inset: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  .footer {
+    color: var(--ink-soft);
+    font-size: 12px;
+    letter-spacing: .04em;
+    opacity: .8;
+    text-align: center;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+    .btn-yes:hover { transform: none; }
+  }
+</style>
+
+<canvas class="confetti" id="confetti" aria-hidden="true"></canvas>
+
+<main class="stage">
+  <div class="trail" id="trail" aria-hidden="true"></div>
+  <section class="card" id="card" role="group" aria-live="polite"></section>
+  <p class="footer">made just for you · pick freely, you can't get it wrong 💌</p>
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---------------------------------------------------------------
+     The branching tree.
+     Every path is 4 questions deep (mood → atmosphere → activity → food)
+     and they ALL converge on the finale. Each choice drops a "chip"
+     used to build her custom day at the end.
+  ----------------------------------------------------------------*/
+  var TREE = {
+    start: {
+      eyebrow: "Question 1 of 4",
+      q: "Okay you — what kind of energy are we going for tomorrow?",
+      sub: "No wrong answers here. That's the whole point. Just pick whatever you're leaning toward right now.",
+      options: [
+        { emoji: "🛋️", label: "Cozy & low-key",        chip: "cozy",        next: "cozy_where" },
+        { emoji: "🧭", label: "Adventurous & out & about", chip: "adventurous", next: "adv_where" },
+        { emoji: "🥂", label: "Fancy, let's dress up",    chip: "a little fancy", next: "fancy_where" },
+        { emoji: "🎲", label: "Surprise me, I can't decide", chip: "spontaneous", next: "spont_where" }
+      ]
+    },
+
+    /* ---- COZY branch ---- */
+    cozy_where: {
+      eyebrow: "Question 2 of 4",
+      q: "Cozy it is. Wrapped-up indoors, or fresh air kind of cozy?",
+      sub: "Both are elite. Follow your gut.",
+      options: [
+        { emoji: "🏠", label: "Indoors, soft and warm", chip: "indoors", next: "cozy_indoor_do" },
+        { emoji: "🌿", label: "Outdoors, gentle & green", chip: "outdoors", next: "cozy_outdoor_do" }
+      ]
+    },
+    cozy_indoor_do: {
+      eyebrow: "Question 3 of 4",
+      q: "What's the plan once we're comfy?",
+      sub: "",
+      options: [
+        { emoji: "☕", label: "Coffee & pastries, tucked in a corner", chip: "a slow café morning", next: "food" },
+        { emoji: "🎬", label: "A movie and way too many blankets",   chip: "a movie in a blanket fort", next: "food" },
+        { emoji: "📚", label: "Getting lost in a bookstore",          chip: "wandering a bookstore", next: "food" }
+      ]
+    },
+    cozy_outdoor_do: {
+      eyebrow: "Question 3 of 4",
+      q: "Where should the fresh air take us?",
+      sub: "",
+      options: [
+        { emoji: "🧺", label: "A picnic somewhere pretty",       chip: "a picnic in the sun", next: "food" },
+        { emoji: "🌅", label: "A slow walk 'til golden hour",     chip: "a golden-hour walk", next: "food" },
+        { emoji: "🌸", label: "Drifting through a park or garden", chip: "wandering a garden", next: "food" }
+      ]
+    },
+
+    /* ---- ADVENTUROUS branch ---- */
+    adv_where: {
+      eyebrow: "Question 2 of 4",
+      q: "Love it. City-adventure or nature-adventure?",
+      sub: "",
+      options: [
+        { emoji: "🏙️", label: "Out in the city, streets & lights", chip: "out in the city", next: "adv_city_do" },
+        { emoji: "⛰️", label: "Off into nature", chip: "out in nature", next: "adv_nature_do" }
+      ]
+    },
+    adv_city_do: {
+      eyebrow: "Question 3 of 4",
+      q: "Pick our kind of trouble:",
+      sub: "",
+      options: [
+        { emoji: "🎡", label: "A fair, arcade, or something silly", chip: "arcade & fairground chaos", next: "food" },
+        { emoji: "🖼️", label: "A museum or gallery crawl",         chip: "a gallery crawl", next: "food" },
+        { emoji: "🛍️", label: "Aimless wandering + street food",    chip: "wandering & street food", next: "food" }
+      ]
+    },
+    adv_nature_do: {
+      eyebrow: "Question 3 of 4",
+      q: "How adventurous are we talking?",
+      sub: "",
+      options: [
+        { emoji: "🥾", label: "A proper hike with a view payoff", chip: "a hike to a great view", next: "food" },
+        { emoji: "🚲", label: "Bikes / boats / something moving", chip: "an out-on-the-water day", next: "food" },
+        { emoji: "⭐", label: "Chasing a sunset or the stars",     chip: "chasing the sunset", next: "food" }
+      ]
+    },
+
+    /* ---- FANCY branch ---- */
+    fancy_where: {
+      eyebrow: "Question 2 of 4",
+      q: "Ooh, dressed up. What's the setting?",
+      sub: "",
+      options: [
+        { emoji: "🌆", label: "Rooftop / skyline views", chip: "a skyline view", next: "fancy_view_do" },
+        { emoji: "🍷", label: "Intimate & candlelit",     chip: "somewhere candlelit", next: "fancy_intimate_do" }
+      ]
+    },
+    fancy_view_do: {
+      eyebrow: "Question 3 of 4",
+      q: "And the main event up there?",
+      sub: "",
+      options: [
+        { emoji: "🍸", label: "Cocktails as the sun goes down", chip: "sunset cocktails", next: "food" },
+        { emoji: "🌃", label: "Dinner with the whole city glowing", chip: "dinner over the skyline", next: "food" }
+      ]
+    },
+    fancy_intimate_do: {
+      eyebrow: "Question 3 of 4",
+      q: "Set the mood — what's the evening?",
+      sub: "",
+      options: [
+        { emoji: "🎻", label: "Live music somewhere low-lit",   chip: "live music, low lights", next: "food" },
+        { emoji: "🍝", label: "A long, unhurried dinner",       chip: "a long slow dinner", next: "food" },
+        { emoji: "🎭", label: "A show, then a nightcap",         chip: "a show & a nightcap", next: "food" }
+      ]
+    },
+
+    /* ---- SPONTANEOUS branch ---- */
+    spont_where: {
+      eyebrow: "Question 2 of 4",
+      q: "The indecisive special. I'll narrow it for you — pick a feeling, not a place:",
+      sub: "Trust me, this works better for picky people. (Said with love.)",
+      options: [
+        { emoji: "😌", label: "I want to feel calm",   chip: "an easy, calm day", next: "spont_calm_do" },
+        { emoji: "🤩", label: "I want to feel excited", chip: "a high-energy day", next: "spont_excited_do" }
+      ]
+    },
+    spont_calm_do: {
+      eyebrow: "Question 3 of 4",
+      q: "Calm, noted. One more nudge:",
+      sub: "",
+      options: [
+        { emoji: "🍵", label: "Somewhere warm & quiet",   chip: "somewhere warm & quiet", next: "food" },
+        { emoji: "🌊", label: "Somewhere with a nice view", chip: "a spot with a view", next: "food" }
+      ]
+    },
+    spont_excited_do: {
+      eyebrow: "Question 3 of 4",
+      q: "Excited, love that. Loud fun or playful fun?",
+      sub: "",
+      options: [
+        { emoji: "🎉", label: "Loud, busy, lots going on", chip: "somewhere buzzing", next: "food" },
+        { emoji: "🕹️", label: "Playful & a little competitive", chip: "a bit of friendly competition", next: "food" }
+      ]
+    },
+
+    /* ---- Converging node: everyone hits this ---- */
+    food: {
+      eyebrow: "Question 4 of 4",
+      q: "Last one, I promise — how do we fuel this whole thing?",
+      sub: "Then I'll hand you your perfect day.",
+      options: [
+        { emoji: "🍰", label: "Something sweet",        chip: "something sweet on the side", next: "finale" },
+        { emoji: "🍜", label: "A proper, real meal",     chip: "a proper meal together", next: "finale" },
+        { emoji: "🧀", label: "Snacky bits to share",    chip: "snacks to share", next: "finale" },
+        { emoji: "🧋", label: "Just good drinks",        chip: "good drinks in hand", next: "finale" }
+      ]
+    }
+  };
+
+  var TOTAL_STEPS = 4;
+
+  var card   = document.getElementById("card");
+  var trail  = document.getElementById("trail");
+  var state  = { node: "start", chips: [], history: [] };
+
+  /* ---------- progress trail ---------- */
+  function stepIndex() {
+    // derive from eyebrow "Question N of 4"; finale = full
+    var node = TREE[state.node];
+    if (!node) return TOTAL_STEPS;
+    var m = /Question (\d)/.exec(node.eyebrow || "");
+    return m ? parseInt(m[1], 10) - 1 : TOTAL_STEPS;
+  }
+  function renderTrail() {
+    var here = stepIndex();
+    var html = "";
+    for (var i = 0; i < TOTAL_STEPS; i++) {
+      var cls = i < here ? "pip done" : (i === here ? "pip here" : "pip");
+      html += '<span class="' + cls + '"></span>';
+    }
+    trail.innerHTML = html;
+  }
+
+  /* ---------- render a question node ---------- */
+  function renderNode(id, animate) {
+    var node = TREE[id];
+    state.node = id;
+    renderTrail();
+
+    var html = "";
+    html += '<p class="eyebrow">' + node.eyebrow + "</p>";
+    html += '<h1 class="question">' + node.q + "</h1>";
+    if (node.sub) html += '<p class="sub">' + node.sub + "</p>";
+    html += '<div class="options">';
+    node.options.forEach(function (opt, i) {
+      html += '<button class="opt" data-i="' + i + '">' +
+                '<span class="emoji" aria-hidden="true">' + opt.emoji + "</span>" +
+                "<span>" + opt.label + "</span>" +
+              "</button>";
+    });
+    html += "</div>";
+    html += '<button class="back"' + (state.history.length ? "" : " hidden") + ">← actually, go back</button>";
+
+    swap(html, animate);
+
+    // wire options
+    Array.prototype.forEach.call(card.querySelectorAll(".opt"), function (btn) {
+      btn.addEventListener("click", function () {
+        var opt = node.options[parseInt(btn.dataset.i, 10)];
+        state.history.push({ node: id, chip: opt.chip });
+        state.chips.push(opt.chip);
+        if (opt.next === "finale") renderFinale();
+        else renderNode(opt.next, true);
+      });
+    });
+    var back = card.querySelector(".back");
+    if (back) back.addEventListener("click", goBack);
+
+    var first = card.querySelector(".opt");
+    if (first) first.focus({ preventScroll: true });
+  }
+
+  function goBack() {
+    if (!state.history.length) return;
+    var last = state.history.pop();
+    state.chips.pop();
+    renderNode(last.node, true);
+  }
+
+  /* ---------- swap helper with transition ---------- */
+  function swap(html, animate) {
+    if (!animate) { card.innerHTML = html; card.classList.add("swap-in"); return; }
+    card.classList.remove("swap-in");
+    card.classList.add("swap-out");
+    var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var delay = reduced ? 0 : 240;
+    setTimeout(function () {
+      card.classList.remove("swap-out");
+      card.innerHTML = html;
+      card.classList.add("swap-in");
+    }, delay);
+  }
+
+  /* ---------- finale: the real question ---------- */
+  function renderFinale() {
+    state.node = "finale";
+    renderTrail();
+
+    var chips = state.chips;
+    var chipHtml = chips.map(function (c) { return '<span class="chip">' + c + "</span>"; }).join("");
+    var plan = buildPlan(chips);
+
+    var html = "";
+    html += '<p class="eyebrow">Your perfect tomorrow</p>';
+    html += '<h1 class="question">Look what you just designed 🩷</h1>';
+    html += '<div class="recap">' + chipHtml + "</div>";
+    html += '<p class="plan-line">' + plan + "</p>";
+    html += '<p class="sub">See? You\'re not indecisive — you just needed the right questions. So there\'s only one thing left to ask…</p>';
+    html += '<h1 class="question" style="margin-bottom:22px">Will you let me actually take you? Make tomorrow a real date?</h1>';
+    html += '<div class="ask-zone" id="ask">' +
+              '<button class="btn-yes" id="yes">Yes, it\'s a date 🥰</button>' +
+              '<button class="btn-no" id="no">hmm, no</button>' +
+            "</div>";
+
+    swap(html, true);
+
+    setTimeout(wireFinale, 260);
+  }
+
+  function buildPlan(chips) {
+    // chips: [mood, atmosphere, activity, food]
+    var mood = chips[0] || "something good";
+    var activity = chips[2] || "something fun";
+    var food = chips[3] || "a good bite";
+    return "So tomorrow looks like <b>" + mood + "</b> — " + activity +
+           ", with <b>" + food + "</b>. Honestly? Perfect.";
+  }
+
+  function wireFinale() {
+    var yes = document.getElementById("yes");
+    var no  = document.getElementById("no");
+    if (!yes || !no) return;
+    var ask = document.getElementById("ask");
+    var dodges = 0;
+    var taunts = ["no", "you sure?", "really?", "try again", "can't click me", "just say yes", "nice try 😌", "nope, yes"];
+
+    function grow() {
+      var s = 1 + Math.min(dodges, 6) * 0.06;
+      yes.style.transform = "scale(" + s + ")";
+    }
+
+    function dodge() {
+      dodges++;
+      // shrink the no button, grow the yes button, teleport no somewhere silly
+      var w = ask.clientWidth, h = ask.clientHeight;
+      var nb = no.getBoundingClientRect();
+      var maxX = Math.max(0, w - nb.width);
+      var maxY = Math.max(0, h - nb.height);
+      no.style.position = "absolute";
+      no.style.left = Math.random() * maxX + "px";
+      no.style.top  = Math.random() * Math.max(maxY, 40) + "px";
+      var shrink = Math.max(0.55, 1 - dodges * 0.08);
+      no.style.fontSize = (15 * shrink) + "px";
+      no.style.padding = (13 * shrink) + "px " + (22 * shrink) + "px";
+      no.textContent = taunts[Math.min(dodges, taunts.length - 1)];
+      grow();
+    }
+
+    no.addEventListener("mouseenter", dodge);
+    no.addEventListener("focus", dodge);
+    no.addEventListener("click", function (e) { e.preventDefault(); dodge(); });
+    // touch devices: catch the tap-attempt
+    no.addEventListener("touchstart", function (e) { e.preventDefault(); dodge(); }, { passive: false });
+
+    yes.addEventListener("click", celebrate);
+  }
+
+  /* ---------- the payoff ---------- */
+  function celebrate() {
+    var html = "";
+    html += '<div class="yay">';
+    html += '<p class="eyebrow" style="color:var(--gold-deep)">It\'s official</p>';
+    html += '<h1 class="big">It\'s a date. 💐</h1>';
+    html += "<p>You just planned it yourself, so no take-backs. I'll handle the rest — you just show up and be your wonderful, impossible-to-decide self.</p>";
+    html += '<span class="seal">See you tomorrow. ✨</span>';
+    html += "</div>";
+    swap(html, true);
+    trail.innerHTML = "";
+    var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!reduced) setTimeout(runConfetti, 240);
+  }
+
+  /* ---------- confetti (canvas hearts) ---------- */
+  function runConfetti() {
+    var cv = document.getElementById("confetti");
+    var ctx = cv.getContext("2d");
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    function size() { cv.width = innerWidth * dpr; cv.height = innerHeight * dpr; }
+    size();
+    var colors = ["#E85D75", "#F0B429", "#FF9FB0", "#C7405C", "#F6C34A"];
+    var parts = [];
+    for (var i = 0; i < 90; i++) {
+      parts.push({
+        x: Math.random() * cv.width,
+        y: -Math.random() * cv.height * 0.4,
+        r: (6 + Math.random() * 8) * dpr,
+        vy: (2 + Math.random() * 3.5) * dpr,
+        vx: (Math.random() - 0.5) * 2 * dpr,
+        rot: Math.random() * Math.PI,
+        vr: (Math.random() - 0.5) * 0.2,
+        c: colors[i % colors.length],
+        heart: Math.random() > 0.4
+      });
+    }
+    var start = Date.now();
+    function heart(ctx, x, y, s, rot, c) {
+      ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(s / 16, s / 16);
+      ctx.beginPath();
+      ctx.moveTo(0, 4);
+      ctx.bezierCurveTo(0, 1, -3, -3, -8, -3);
+      ctx.bezierCurveTo(-15, -3, -15, 6, -15, 6);
+      ctx.bezierCurveTo(-15, 11, -9, 16, 0, 21);
+      ctx.bezierCurveTo(9, 16, 15, 11, 15, 6);
+      ctx.bezierCurveTo(15, 6, 15, -3, 8, -3);
+      ctx.bezierCurveTo(3, -3, 0, 1, 0, 4);
+      ctx.closePath(); ctx.fillStyle = c; ctx.fill(); ctx.restore();
+    }
+    function frame() {
+      var t = Date.now() - start;
+      ctx.clearRect(0, 0, cv.width, cv.height);
+      parts.forEach(function (p) {
+        p.x += p.vx; p.y += p.vy; p.rot += p.vr; p.vy += 0.02 * dpr;
+        if (p.y > cv.height + 40) { p.y = -40; p.x = Math.random() * cv.width; }
+        if (p.heart) heart(ctx, p.x, p.y, p.r, p.rot, p.c);
+        else {
+          ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+          ctx.fillStyle = p.c; ctx.fillRect(-p.r / 2, -p.r / 2, p.r, p.r * 0.6); ctx.restore();
+        }
+      });
+      if (t < 6500) requestAnimationFrame(frame);
+      else fade();
+    }
+    var fadeStart;
+    function fade() {
+      if (!fadeStart) fadeStart = Date.now();
+      var k = 1 - (Date.now() - fadeStart) / 1200;
+      ctx.clearRect(0, 0, cv.width, cv.height);
+      if (k > 0) { cv.style.opacity = k; requestAnimationFrame(fade); }
+      else cv.style.opacity = 0;
+    }
+    addEventListener("resize", size);
+    frame();
+  }
+
+  renderNode("start", false);
+})();
+</script>
