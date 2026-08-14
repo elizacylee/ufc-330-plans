@@ -3,9 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="color-scheme" content="light dark">
-<meta name="theme-color" content="#F4F4F2" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#151517" media="(prefers-color-scheme: dark)">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0B0B0D">
 <title>UFC 330 Plans</title>
 <meta name="description" content="Sorting out the plan for UFC 330 — pick where we go.">
 <!-- Link-preview card (shows when the link is shared in Messages/WhatsApp/etc.) -->
@@ -14,29 +13,18 @@
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary">
 <style>
-  /* ---------- Tokens (neutral) ---------- */
+  /* ---------- Fight-night palette (committed dark) ---------- */
   :root {
-    --ground:      #F4F4F2;
-    --surface:     #FFFFFF;
-    --surface-2:   #ECECE9;
-    --ink:         #1B1B1D;
-    --ink-soft:    #6B6B70;
-    --line:        #E3E3DF;
-    --accent:      #3E7C6B;
-    --accent-deep: #2E5F52;
-    --shadow:      20, 20, 22;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --ground:#151517; --surface:#202023; --surface-2:#2A2A2E;
-      --ink:#F0F0F1; --ink-soft:#9E9EA5; --line:#33333A;
-      --accent:#5AAE97; --accent-deep:#7FC7B2; --shadow:0,0,0;
-    }
-  }
-  :root[data-theme="dark"] {
-    --ground:#151517; --surface:#202023; --surface-2:#2A2A2E;
-    --ink:#F0F0F1; --ink-soft:#9E9EA5; --line:#33333A;
-    --accent:#5AAE97; --accent-deep:#7FC7B2; --shadow:0,0,0;
+    --ground:   #0B0B0D;
+    --panel:    #141418;
+    --panel-2:  #1C1C22;
+    --ink:      #F5F5F3;
+    --ink-soft: #9A9AA2;
+    --line:     #2A2A31;
+    --red:      #E0242B;
+    --red-deep: #A5151B;
+    --gold:     #E8C24A;
+    --gold-deep:#C79A28;
   }
 
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -44,95 +32,152 @@
 
   body {
     margin: 0;
-    min-height: 100vh;
-    min-height: 100dvh;                 /* handles the mobile browser bars */
-    background: var(--ground); color: var(--ink);
+    min-height: 100vh; min-height: 100dvh;
+    color: var(--ink);
+    background:
+      radial-gradient(120% 80% at 50% -10%, rgba(224,36,43,.18), transparent 55%),
+      radial-gradient(100% 60% at 50% 115%, rgba(232,194,74,.08), transparent 60%),
+      var(--ground);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    /* extra padding respects the notch / home-indicator safe areas */
-    padding: calc(24px + env(safe-area-inset-top)) calc(18px + env(safe-area-inset-right))
-             calc(32px + env(safe-area-inset-bottom)) calc(18px + env(safe-area-inset-left));
+    padding: calc(22px + env(safe-area-inset-top)) calc(18px + env(safe-area-inset-right))
+             calc(30px + env(safe-area-inset-bottom)) calc(18px + env(safe-area-inset-left));
     -webkit-font-smoothing: antialiased;
-    overflow-x: hidden;                 /* the dodging "no" can never cause sideways scroll */
+    overflow-x: hidden;
   }
-  .stage { width: 100%; max-width: 540px; display: flex; flex-direction: column; align-items: center; gap: 20px; }
 
-  .trail { display: flex; gap: 8px; align-items: center; height: 12px; }
-  .trail .pip { width: 26px; height: 4px; border-radius: 2px; background: var(--line); transition: background .35s ease; }
-  .trail .pip.done, .trail .pip.here { background: var(--accent); }
+  /* faint octagon "cage" behind everything */
+  .cage {
+    position: fixed; inset: 0; z-index: -1; pointer-events: none;
+    background-repeat: no-repeat; background-position: center 46%;
+    background-size: min(88vmin, 640px);
+    opacity: .07;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon points='30,4 70,4 96,30 96,70 70,96 30,96 4,70 4,30' fill='none' stroke='%23E0242B' stroke-width='0.7'/%3E%3Cpolygon points='34,10 66,10 90,34 90,66 66,90 34,90 10,66 10,34' fill='none' stroke='%23E0242B' stroke-width='0.4'/%3E%3C/svg%3E");
+  }
+
+  .stage { width: 100%; max-width: 540px; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+
+  /* masthead */
+  .masthead {
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 800; font-size: 12px; letter-spacing: .22em; text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .masthead .tag {
+    color: #fff; background: var(--red); padding: 3px 8px; border-radius: 4px;
+    letter-spacing: .12em; box-shadow: 0 0 18px -6px var(--red);
+  }
+  .masthead .oct { color: var(--red); font-size: 13px; }
+
+  /* round meter */
+  .trail { display: flex; gap: 6px; align-items: center; }
+  .trail .pip { width: 30px; height: 5px; border-radius: 1px; background: var(--line); transition: background .35s ease, box-shadow .35s ease; }
+  .trail .pip.done, .trail .pip.here { background: var(--red); box-shadow: 0 0 12px -3px var(--red); }
 
   .card {
-    width: 100%; background: var(--surface); border: 1px solid var(--line);
-    border-radius: 16px; padding: 32px 28px 28px;
-    box-shadow: 0 18px 44px -28px rgba(var(--shadow), .5);
+    width: 100%; background: linear-gradient(180deg, var(--panel), #101014);
+    border: 1px solid var(--line); border-radius: 6px;
+    padding: 30px 26px 26px; position: relative; overflow: hidden;
+    box-shadow: 0 30px 60px -30px #000, inset 0 1px 0 rgba(255,255,255,.03);
   }
-  .eyebrow { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; font-weight: 700; color: var(--ink-soft); margin: 0 0 14px; }
-  .question { font-size: clamp(22px, 6.2vw, 30px); font-weight: 700; line-height: 1.22; letter-spacing: -0.02em; text-wrap: balance; margin: 0 0 8px; }
-  .sub { color: var(--ink-soft); font-size: 15px; line-height: 1.55; margin: 0 0 22px; text-wrap: pretty; }
+  .card::before {  /* red corner accent — fight-card edge */
+    content: ""; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+    background: linear-gradient(var(--red), var(--red-deep));
+  }
 
-  .options { display: flex; flex-direction: column; gap: 10px; }
+  .eyebrow {
+    font-size: 11px; letter-spacing: .2em; text-transform: uppercase; font-weight: 800;
+    color: var(--red); margin: 0 0 12px; font-variant-numeric: tabular-nums;
+  }
+  .eyebrow.gold { color: var(--gold); }
+
+  .question {
+    font-family: "Arial Narrow", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: 800; font-stretch: condensed;
+    text-transform: uppercase; letter-spacing: .005em;
+    font-size: clamp(24px, 6.6vw, 34px); line-height: 1.06;
+    text-wrap: balance; margin: 0 0 10px;
+  }
+  .sub { color: var(--ink-soft); font-size: 14.5px; line-height: 1.55; margin: 0 0 22px; text-wrap: pretty; }
+
+  .options { display: flex; flex-direction: column; gap: 9px; }
   .opt {
     appearance: none; text-align: left; font: inherit; font-size: 16px; font-weight: 600;
-    color: var(--ink); background: var(--surface-2); border: 1.5px solid transparent;
-    border-radius: 12px; padding: 16px; min-height: 56px; cursor: pointer;
-    display: flex; align-items: center; gap: 12px;
-    touch-action: manipulation;         /* kills the 300ms tap delay + double-tap zoom */
-    transition: transform .14s ease, border-color .14s ease, background .14s ease;
+    color: var(--ink); background: var(--panel-2); border: 1px solid var(--line);
+    border-left: 3px solid var(--line);
+    border-radius: 5px; padding: 15px 16px; min-height: 56px; cursor: pointer;
+    display: flex; align-items: center; gap: 12px; touch-action: manipulation;
+    transition: transform .14s ease, border-color .14s ease, background .14s ease, box-shadow .14s ease;
   }
   .opt .emoji { font-size: 20px; line-height: 1; flex: none; }
-  .opt:hover, .opt:focus-visible { border-color: var(--accent); transform: translateY(-1px); outline: none; }
-  .opt:focus-visible { box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 26%, transparent); }
-  .opt:active { transform: scale(.99); background: color-mix(in srgb, var(--accent) 12%, var(--surface-2)); }
+  .opt .go { margin-left: auto; color: var(--ink-soft); font-weight: 800; transition: color .14s, transform .14s; }
+  .opt:hover, .opt:focus-visible {
+    border-color: var(--red); border-left-color: var(--red);
+    background: #212128; transform: translateX(2px); outline: none;
+    box-shadow: 0 0 0 1px var(--red), 0 12px 30px -18px var(--red);
+  }
+  .opt:hover .go, .opt:focus-visible .go { color: var(--red); transform: translateX(3px); }
+  .opt:active { transform: translateX(0) scale(.995); }
 
-  .swap-in { animation: swapIn .34s cubic-bezier(.2,.7,.2,1) both; }
-  .swap-out { animation: swapOut .24s ease both; }
+  .swap-in { animation: swapIn .32s cubic-bezier(.2,.7,.2,1) both; }
+  .swap-out { animation: swapOut .22s ease both; }
   @keyframes swapIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
   @keyframes swapOut { from { opacity: 1; } to { opacity: 0; transform: translateY(-8px); } }
 
-  .back { margin-top: 18px; background: none; border: none; color: var(--ink-soft); font: inherit; font-size: 14px; cursor: pointer; padding: 8px 0; touch-action: manipulation; }
-  .back:hover { color: var(--accent); }
+  .back { margin-top: 18px; background: none; border: none; color: var(--ink-soft); font: inherit; font-size: 13.5px; cursor: pointer; padding: 8px 0; touch-action: manipulation; text-transform: uppercase; letter-spacing: .08em; font-weight: 700; }
+  .back:hover { color: var(--red); }
   .back[hidden] { display: none; }
 
-  .recap { display: flex; flex-wrap: wrap; gap: 8px; margin: 2px 0 20px; }
-  .chip { background: var(--surface-2); color: var(--ink); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; font-size: 13px; font-weight: 600; }
-  .plan-line { font-size: 16px; line-height: 1.5; color: var(--ink); margin: 0 0 22px; text-wrap: pretty; }
-  .plan-line b { font-weight: 700; color: var(--accent-deep); }
+  /* Tale of the tape recap */
+  .tape { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin: 2px 0 20px; }
+  .tape .row { display: flex; justify-content: space-between; align-items: center; gap: 14px; padding: 11px 2px; border-bottom: 1px solid var(--line); }
+  .tape .row:last-child { border-bottom: none; }
+  .tape .k { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-soft); font-weight: 800; }
+  .tape .v { font-size: 15px; font-weight: 700; text-align: right; color: var(--ink); }
 
   .ask-zone { position: relative; min-height: 76px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
   .btn-yes {
-    appearance: none; font: inherit; font-weight: 700; font-size: 17px; color: #fff;
-    background: var(--accent); border: none; border-radius: 12px; padding: 16px 26px; min-height: 54px; cursor: pointer;
+    appearance: none; font-family: "Arial Narrow", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: 800; font-stretch: condensed; text-transform: uppercase; letter-spacing: .04em;
+    font-size: 19px; color: #fff;
+    background: linear-gradient(180deg, var(--red), var(--red-deep));
+    border: none; border-radius: 5px; padding: 16px 28px; min-height: 56px; cursor: pointer;
     touch-action: manipulation;
-    box-shadow: 0 10px 24px -12px var(--accent-deep); transition: transform .16s ease, background .16s ease;
+    box-shadow: 0 0 26px -6px var(--red), inset 0 1px 0 rgba(255,255,255,.2);
+    transition: transform .16s ease, box-shadow .16s ease;
   }
-  .btn-yes:hover, .btn-yes:focus-visible { transform: scale(1.04); background: var(--accent-deep); outline: none; }
+  .btn-yes:hover, .btn-yes:focus-visible { transform: scale(1.05); box-shadow: 0 0 40px -6px var(--red); outline: none; }
   .btn-no {
-    appearance: none; font: inherit; font-weight: 600; font-size: 15px; color: var(--ink-soft);
-    background: var(--surface-2); border: 1.5px solid var(--line); border-radius: 12px;
-    padding: 13px 20px; cursor: pointer; touch-action: manipulation;
+    appearance: none; font: inherit; font-weight: 700; font-size: 14.5px; color: var(--ink-soft);
+    background: var(--panel-2); border: 1px solid var(--line); border-radius: 5px;
+    padding: 13px 20px; cursor: pointer; touch-action: manipulation; text-transform: uppercase; letter-spacing: .06em;
     transition: transform .12s ease, font-size .2s ease, padding .2s ease;
   }
 
   .yay { text-align: left; }
-  .yay .big { font-size: clamp(26px, 7vw, 36px); font-weight: 700; letter-spacing: -0.02em; line-height: 1.15; margin: 4px 0 12px; text-wrap: balance; }
+  .yay .big {
+    font-family: "Arial Narrow", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: 800; font-stretch: condensed; text-transform: uppercase; letter-spacing: .01em;
+    font-size: clamp(30px, 8.5vw, 46px); line-height: 1.02; margin: 4px 0 12px; text-wrap: balance;
+    color: #fff;
+  }
+  .yay .big em { color: var(--gold); font-style: normal; }
   .yay p { color: var(--ink-soft); font-size: 15px; line-height: 1.6; margin: 0; max-width: 44ch; }
-  .yay .seal { display: inline-block; margin: 20px 0 2px; font-size: 14px; font-weight: 700; color: var(--accent-deep); letter-spacing: .02em; }
+  .yay .seal { display: inline-block; margin: 18px 0 2px; font-size: 13px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); }
   .restart {
-    margin-top: 24px; appearance: none; font: inherit; font-size: 14px; font-weight: 600;
+    margin-top: 22px; appearance: none; font: inherit; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em;
     color: var(--ink-soft); background: none; border: 1px solid var(--line); border-radius: 999px;
     padding: 11px 18px; min-height: 44px; cursor: pointer; touch-action: manipulation;
   }
-  .restart:hover { color: var(--accent); border-color: var(--accent); }
+  .restart:hover { color: var(--red); border-color: var(--red); }
 
   canvas.confetti { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
-  .footer { color: var(--ink-soft); font-size: 12px; opacity: .85; text-align: center; padding: 0 8px; }
+  .footer { color: var(--ink-soft); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; opacity: .7; text-align: center; padding: 0 8px; font-weight: 700; }
 
-  /* Small phones: tighten spacing so it never needs scrolling to answer */
   @media (max-width: 380px) {
-    .card { padding: 26px 20px 22px; }
+    .card { padding: 24px 18px 20px; }
     .opt { padding: 14px; min-height: 52px; }
   }
-
   @media (prefers-reduced-motion: reduce) {
     * { animation-duration: .001ms !important; transition-duration: .001ms !important; }
     .btn-yes:hover { transform: none; }
@@ -141,12 +186,14 @@
 </head>
 <body>
 
+<div class="cage" aria-hidden="true"></div>
 <canvas class="confetti" id="confetti" aria-hidden="true"></canvas>
 
 <main class="stage">
+  <div class="masthead"><span class="oct">◆</span> <span class="tag">UFC 330</span> Fight Night</div>
   <div class="trail" id="trail" aria-hidden="true"></div>
   <section class="card" id="card" role="group" aria-live="polite"></section>
-  <p class="footer">pick whatever you feel like — there are no wrong answers</p>
+  <p class="footer">no bad picks — it's all main card</p>
 </main>
 
 <script>
@@ -154,16 +201,12 @@
   "use strict";
 
   /* ===============================================================
-     1) LOGGING CONFIG  — paste your Google Apps Script URL here.
-     Leave it as "" and the page still works, it just won't log.
-     Get this URL by following SETUP.md (takes ~5 minutes).
+     1) LOGGING CONFIG  — your Google Apps Script URL.
   ================================================================ */
   var CONFIG = {
     logEndpoint: "https://script.google.com/macros/s/AKfycbzZ_bFbiscDO0Ymq_of2qAxYXVYJ9nEvUezYMVfgcxI7r0-82brF-sTYUPYA1MWB-DgVw/exec"
   };
 
-  // A tag so you can tell test runs apart from the real one.
-  // Send a friend the link with  ?by=friend  and they'll show up labelled "friend".
   var BY = (new URLSearchParams(location.search).get("by") || "her").slice(0, 40);
   var SESSION = Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 7);
   var completed = false;
@@ -171,29 +214,24 @@
   function logEvent(type, extra) {
     if (!CONFIG.logEndpoint) return;
     try {
-      var payload = {
-        ts: new Date().toISOString(),
-        by: BY, session: SESSION, type: type,
-        chips: state.chips.slice(), node: state.node
-      };
+      var payload = { ts: new Date().toISOString(), by: BY, session: SESSION, type: type, chips: state.chips.slice(), node: state.node };
       if (extra) for (var k in extra) payload[k] = extra[k];
       var body = JSON.stringify(payload);
       var blob = new Blob([body], { type: "text/plain;charset=UTF-8" });
       if (navigator.sendBeacon) navigator.sendBeacon(CONFIG.logEndpoint, blob);
       else fetch(CONFIG.logEndpoint, { method: "POST", mode: "no-cors", body: body, keepalive: true });
-    } catch (e) { /* logging must never break the page */ }
+    } catch (e) {}
   }
 
   /* ===============================================================
-     2) THE QUESTIONS  — flow is LOCATION -> GYM -> FOOD -> UFC.
-     Everything below is placeholder. Send me the real spots and
-     I'll drop them straight in. All paths end on the same question.
+     2) THE QUESTIONS  — LOCATION -> GYM -> FOOD -> UFC.
+     Placeholders for now — send me the real spots to drop in.
   ================================================================ */
   var TREE = {
     start: {
-      eyebrow: "Step 1 of 4",
-      q: "First — where are we basing ourselves tomorrow?",
-      sub: "This decides everything else. Just pick a side of town.",
+      eyebrow: "Round 1 / 4",
+      q: "Where are we basing the night?",
+      sub: "This sets the whole card. Pick a side of town.",
       options: [
         { emoji: "📍", label: "Location A  (tell me the spot)", chip: "Location A", next: "A_gym" },
         { emoji: "📍", label: "Location B  (tell me the spot)", chip: "Location B", next: "B_gym" },
@@ -201,49 +239,49 @@
       ]
     },
 
-    A_gym: { eyebrow: "Step 2 of 4", q: "Cool. Gym first — what are we hitting?", sub: "",
+    A_gym: { eyebrow: "Round 2 / 4", q: "Warm-up: gym first — what are we hitting?", sub: "",
       options: [
         { emoji: "🏋️", label: "Gym option A1  (fill in)", chip: "gym: A1", next: "A_food" },
         { emoji: "🤸", label: "Gym option A2  (fill in)", chip: "gym: A2", next: "A_food" }
       ] },
-    A_food: { eyebrow: "Step 3 of 4", q: "Post-workout food — pick your poison:", sub: "",
+    A_food: { eyebrow: "Round 3 / 4", q: "Fuel up — post-workout food?", sub: "",
       options: [
         { emoji: "🍽️", label: "Food option A1  (fill in)", chip: "food: A1", next: "A_ufc" },
         { emoji: "🥡", label: "Food option A2  (fill in)", chip: "food: A2", next: "A_ufc" }
       ] },
-    A_ufc: { eyebrow: "Step 4 of 4", q: "And the fights — where do we watch UFC?", sub: "",
+    A_ufc: { eyebrow: "Round 4 / 4", q: "Main card — where do we watch the fights?", sub: "",
       options: [
         { emoji: "🥊", label: "UFC option A1  (fill in)", chip: "UFC: A1", next: "finale" },
         { emoji: "📺", label: "UFC option A2  (fill in)", chip: "UFC: A2", next: "finale" }
       ] },
 
-    B_gym: { eyebrow: "Step 2 of 4", q: "Nice. Gym first — what are we hitting?", sub: "",
+    B_gym: { eyebrow: "Round 2 / 4", q: "Warm-up: gym first — what are we hitting?", sub: "",
       options: [
         { emoji: "🏋️", label: "Gym option B1  (fill in)", chip: "gym: B1", next: "B_food" },
         { emoji: "🤸", label: "Gym option B2  (fill in)", chip: "gym: B2", next: "B_food" }
       ] },
-    B_food: { eyebrow: "Step 3 of 4", q: "Then food — pick your poison:", sub: "",
+    B_food: { eyebrow: "Round 3 / 4", q: "Fuel up — food after?", sub: "",
       options: [
         { emoji: "🍽️", label: "Food option B1  (fill in)", chip: "food: B1", next: "B_ufc" },
         { emoji: "🥡", label: "Food option B2  (fill in)", chip: "food: B2", next: "B_ufc" }
       ] },
-    B_ufc: { eyebrow: "Step 4 of 4", q: "And the fights — where do we watch UFC?", sub: "",
+    B_ufc: { eyebrow: "Round 4 / 4", q: "Main card — where do we watch the fights?", sub: "",
       options: [
         { emoji: "🥊", label: "UFC option B1  (fill in)", chip: "UFC: B1", next: "finale" },
         { emoji: "📺", label: "UFC option B2  (fill in)", chip: "UFC: B2", next: "finale" }
       ] },
 
-    C_gym: { eyebrow: "Step 2 of 4", q: "Let's go. Gym first — what are we hitting?", sub: "",
+    C_gym: { eyebrow: "Round 2 / 4", q: "Warm-up: gym first — what are we hitting?", sub: "",
       options: [
         { emoji: "🏋️", label: "Gym option C1  (fill in)", chip: "gym: C1", next: "C_food" },
         { emoji: "🤸", label: "Gym option C2  (fill in)", chip: "gym: C2", next: "C_food" }
       ] },
-    C_food: { eyebrow: "Step 3 of 4", q: "Food after — pick your poison:", sub: "",
+    C_food: { eyebrow: "Round 3 / 4", q: "Fuel up — food after?", sub: "",
       options: [
         { emoji: "🍽️", label: "Food option C1  (fill in)", chip: "food: C1", next: "C_ufc" },
         { emoji: "🥡", label: "Food option C2  (fill in)", chip: "food: C2", next: "C_ufc" }
       ] },
-    C_ufc: { eyebrow: "Step 4 of 4", q: "And the fights — where do we watch UFC?", sub: "",
+    C_ufc: { eyebrow: "Round 4 / 4", q: "Main card — where do we watch the fights?", sub: "",
       options: [
         { emoji: "🥊", label: "UFC option C1  (fill in)", chip: "UFC: C1", next: "finale" },
         { emoji: "📺", label: "UFC option C2  (fill in)", chip: "UFC: C2", next: "finale" }
@@ -258,7 +296,7 @@
   function stepIndex() {
     var node = TREE[state.node];
     if (!node) return TOTAL_STEPS;
-    var m = /Step (\d)/.exec(node.eyebrow || "");
+    var m = /Round (\d)/.exec(node.eyebrow || "");
     return m ? parseInt(m[1], 10) - 1 : TOTAL_STEPS;
   }
   function renderTrail() {
@@ -282,10 +320,11 @@
     node.options.forEach(function (opt, i) {
       html += '<button class="opt" data-i="' + i + '">' +
                 (opt.emoji ? '<span class="emoji" aria-hidden="true">' + opt.emoji + "</span>" : "") +
-                "<span>" + opt.label + "</span></button>";
+                "<span>" + opt.label + "</span>" +
+                '<span class="go" aria-hidden="true">›</span></button>';
     });
     html += "</div>";
-    html += '<button class="back"' + (state.history.length ? "" : " hidden") + ">← go back</button>";
+    html += '<button class="back"' + (state.history.length ? "" : " hidden") + ">‹ back</button>";
     swap(html, animate);
 
     Array.prototype.forEach.call(card.querySelectorAll(".opt"), function (btn) {
@@ -320,45 +359,46 @@
       card.classList.remove("swap-out");
       card.innerHTML = html;
       card.classList.add("swap-in");
-    }, reduced ? 0 : 200);
+    }, reduced ? 0 : 190);
+  }
+
+  function clean(chips) {
+    return {
+      loc:  chips[0] || "wherever",
+      gym:  (chips[1] || "gym").replace(/^gym: /, ""),
+      food: (chips[2] || "food").replace(/^food: /, ""),
+      ufc:  (chips[3] || "the fights").replace(/^UFC: /, "")
+    };
+  }
+  function planText(chips) {
+    var c = clean(chips);
+    return c.loc + " -> " + c.gym + " -> " + c.food + " -> UFC at " + c.ufc;
   }
 
   function renderFinale() {
     state.node = "finale";
     renderTrail();
-    var chipHtml = state.chips.map(function (c) { return '<span class="chip">' + c + "</span>"; }).join("");
-    var plan = buildPlan(state.chips);
+    var c = clean(state.chips);
     logEvent("reached_question", { plan: planText(state.chips) });
 
     var html = "";
-    html += '<p class="eyebrow">Here\'s the plan you built</p>';
-    html += '<h1 class="question">Locked in.</h1>';
-    html += '<div class="recap">' + chipHtml + "</div>";
-    html += '<p class="plan-line">' + plan + "</p>";
-    html += '<p class="sub">One thing though — I never said whose plan this was.</p>';
-    html += '<h1 class="question" style="margin-bottom:20px">So, do you want tomorrow to be a date?</h1>';
+    html += '<p class="eyebrow gold">Tale of the tape</p>';
+    html += '<h1 class="question">The card is set.</h1>';
+    html += '<div class="tape">' +
+              '<div class="row"><span class="k">Location</span><span class="v">' + c.loc + "</span></div>" +
+              '<div class="row"><span class="k">Warm-up</span><span class="v">' + c.gym + "</span></div>" +
+              '<div class="row"><span class="k">Fuel</span><span class="v">' + c.food + "</span></div>" +
+              '<div class="row"><span class="k">Main card</span><span class="v">' + c.ufc + "</span></div>" +
+            "</div>";
+    html += '<p class="sub">One thing though — I never said whose fight night this was.</p>';
+    html += '<p class="eyebrow gold" style="margin-bottom:8px">Main event</p>';
+    html += '<h1 class="question" style="margin-bottom:20px">Do you want tomorrow to be a date?</h1>';
     html += '<div class="ask-zone" id="ask">' +
-              '<button class="btn-yes" id="yes">Yeah, it\'s a date</button>' +
+              '<button class="btn-yes" id="yes">Yes — it\'s a date</button>' +
               '<button class="btn-no" id="no">no</button>' +
             "</div>";
     swap(html, true);
-    setTimeout(wireFinale, 220);
-  }
-
-  function planText(chips) {
-    var loc  = chips[0] || "wherever";
-    var gym  = (chips[1] || "gym").replace(/^gym: /, "");
-    var food = (chips[2] || "food").replace(/^food: /, "");
-    var ufc  = (chips[3] || "the fights").replace(/^UFC: /, "");
-    return loc + " -> " + gym + " -> " + food + " -> UFC at " + ufc;
-  }
-  function buildPlan(chips) {
-    var loc  = chips[0] || "wherever";
-    var gym  = (chips[1] || "gym").replace(/^gym: /, "");
-    var food = (chips[2] || "food").replace(/^food: /, "");
-    var ufc  = (chips[3] || "the fights").replace(/^UFC: /, "");
-    return "<b>" + loc + "</b> → hit <b>" + gym + "</b>, grab <b>" + food +
-           "</b>, then watch the UFC at <b>" + ufc + "</b>. Solid day.";
+    setTimeout(wireFinale, 210);
   }
 
   function wireFinale() {
@@ -368,7 +408,7 @@
     var ask = document.getElementById("ask");
     var dodges = 0;
     var taunts = ["no", "you sure?", "really?"];
-    var MAX_DODGE = 3; // after this the "no" settles and is genuinely clickable, so a real no is captured
+    var MAX_DODGE = 3;
 
     function dodge() {
       dodges++;
@@ -398,16 +438,16 @@
     logEvent("yes", { plan: plan });
     var html = "";
     html += '<div class="yay">';
-    html += '<p class="eyebrow" style="color:var(--accent-deep)">Done deal</p>';
-    html += '<h1 class="big">It\'s a date.</h1>';
-    html += "<p>You planned the whole thing yourself, so no backing out now. Gym, food, fights — same as always, just official this time.</p>";
-    html += '<span class="seal">See you tomorrow.</span><br>';
-    html += '<button class="restart" id="restart">↺ start over</button>';
+    html += '<p class="eyebrow gold">And still… by unanimous decision</p>';
+    html += '<h1 class="big">It\'s a <em>date.</em></h1>';
+    html += "<p>You booked the whole card yourself, so no rematch clause — the decision stands. Gym, food, fights… official this time.</p>";
+    html += '<span class="seal">See you tomorrow · 🥊</span><br>';
+    html += '<button class="restart" id="restart">↺ run it back</button>';
     html += "</div>";
     swap(html, true);
     trail.innerHTML = "";
-    setTimeout(wireRestart, 220);
-    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) setTimeout(runConfetti, 220);
+    setTimeout(wireRestart, 210);
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) setTimeout(runConfetti, 210);
   }
 
   function declined(plan) {
@@ -415,14 +455,14 @@
     logEvent("no", { plan: plan });
     var html = "";
     html += '<div class="yay">';
-    html += '<p class="eyebrow">All good</p>';
-    html += '<h1 class="big">No worries.</h1>';
-    html += "<p>The plan still stands as friends anytime — no pressure at all. Thanks for humouring the little quiz.</p>";
-    html += '<button class="restart" id="restart">↺ start over</button>';
+    html += '<p class="eyebrow">No contest</p>';
+    html += '<h1 class="big">All good.</h1>';
+    html += "<p>Plan still stands as mates anytime — no pressure at all. Thanks for humouring the little quiz.</p>";
+    html += '<button class="restart" id="restart">↺ run it back</button>';
     html += "</div>";
     swap(html, true);
     trail.innerHTML = "";
-    setTimeout(wireRestart, 220);
+    setTimeout(wireRestart, 210);
   }
 
   function wireRestart() {
@@ -435,21 +475,18 @@
     });
   }
 
-  // Best-effort: if she closes/leaves before finishing, still record where she stopped.
   addEventListener("pagehide", function () { if (!completed) logEvent("left"); });
 
-  /* ---------- confetti (neutral squares) ---------- */
+  /* ---------- confetti (red / gold / white) ---------- */
   function runConfetti() {
     var cv = document.getElementById("confetti");
     var ctx = cv.getContext("2d");
     var dpr = Math.min(window.devicePixelRatio || 1, 2);
     function size() { cv.width = innerWidth * dpr; cv.height = innerHeight * dpr; }
     size();
-    var styles = getComputedStyle(document.documentElement);
-    var accent = styles.getPropertyValue("--accent").trim() || "#3E7C6B";
-    var colors = [accent, "#9E9EA5", "#C9C9C4", accent];
+    var colors = ["#E0242B", "#E8C24A", "#FFFFFF", "#A5151B"];
     var parts = [];
-    for (var i = 0; i < 80; i++) {
+    for (var i = 0; i < 90; i++) {
       parts.push({
         x: Math.random() * cv.width, y: -Math.random() * cv.height * 0.4,
         r: (5 + Math.random() * 7) * dpr, vy: (2 + Math.random() * 3.2) * dpr,
