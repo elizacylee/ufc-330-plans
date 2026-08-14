@@ -25,7 +25,7 @@ email the moment she gives a final yes/no.
 
 ## B) Put your URL into the page
 
-1. Open `date-decider.html`. Near the top of the `<script>` find:
+1. Open `index.html`. Near the top of the `<script>` find:
    ```js
    var CONFIG = { logEndpoint: "" };
    ```
@@ -40,7 +40,7 @@ The page must be hosted so she can open it on her phone.
 2. Under **Build and deployment → Source**, choose **Deploy from a branch**.
 3. Pick the branch (`main` after we merge, or the working branch) and folder `/ (root)`. **Save**.
 4. Wait ~1 minute. Your link will be:
-   `https://elizacylee.github.io/git_test/date-decider.html`
+   `https://elizacylee.github.io/git_test/index.html`
 
 ---
 
@@ -55,6 +55,6 @@ The page must be hosted so she can open it on her phone.
 
 - Just open the link and run through it — each run is a fresh `Session` in the sheet.
 - To label a test run, add `?by=friend` to the link, e.g.
-  `.../date-decider.html?by=friend`. Those rows show up tagged "friend" so they
+  `.../index.html?by=friend`. Those rows show up tagged "friend" so they
   don't get confused with her real run (which is tagged "her" by default).
 - Nothing to reset between runs — there's a **↺ start over** button at the end too.
