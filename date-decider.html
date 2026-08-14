@@ -8,213 +8,98 @@
     --ink:         #1B1B1D;
     --ink-soft:    #6B6B70;
     --line:        #E3E3DF;
-    --accent:      #3E7C6B;   /* single restrained accent */
+    --accent:      #3E7C6B;
     --accent-deep: #2E5F52;
     --shadow:      20, 20, 22;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --ground:    #151517;
-      --surface:   #202023;
-      --surface-2: #2A2A2E;
-      --ink:       #F0F0F1;
-      --ink-soft:  #9E9EA5;
-      --line:      #33333A;
-      --accent:    #5AAE97;
-      --accent-deep:#7FC7B2;
-      --shadow:    0, 0, 0;
+      --ground:#151517; --surface:#202023; --surface-2:#2A2A2E;
+      --ink:#F0F0F1; --ink-soft:#9E9EA5; --line:#33333A;
+      --accent:#5AAE97; --accent-deep:#7FC7B2; --shadow:0,0,0;
     }
   }
   :root[data-theme="dark"] {
-    --ground:    #151517;
-    --surface:   #202023;
-    --surface-2: #2A2A2E;
-    --ink:       #F0F0F1;
-    --ink-soft:  #9E9EA5;
-    --line:      #33333A;
-    --accent:    #5AAE97;
-    --accent-deep:#7FC7B2;
-    --shadow:    0, 0, 0;
+    --ground:#151517; --surface:#202023; --surface-2:#2A2A2E;
+    --ink:#F0F0F1; --ink-soft:#9E9EA5; --line:#33333A;
+    --accent:#5AAE97; --accent-deep:#7FC7B2; --shadow:0,0,0;
   }
 
   * { box-sizing: border-box; }
-
   body {
-    margin: 0;
-    min-height: 100vh;
-    background: var(--ground);
-    color: var(--ink);
+    margin: 0; min-height: 100vh;
+    background: var(--ground); color: var(--ink);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 28px 20px 40px;
-    -webkit-font-smoothing: antialiased;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 28px 20px 40px; -webkit-font-smoothing: antialiased;
   }
+  .stage { width: 100%; max-width: 540px; display: flex; flex-direction: column; align-items: center; gap: 22px; }
 
-  .stage {
-    width: 100%;
-    max-width: 540px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 22px;
-  }
-
-  /* ---------- Progress trail ---------- */
   .trail { display: flex; gap: 8px; align-items: center; height: 12px; }
-  .trail .pip {
-    width: 26px; height: 4px; border-radius: 2px;
-    background: var(--line);
-    transition: background .35s ease;
-  }
+  .trail .pip { width: 26px; height: 4px; border-radius: 2px; background: var(--line); transition: background .35s ease; }
   .trail .pip.done, .trail .pip.here { background: var(--accent); }
 
-  /* ---------- Card ---------- */
   .card {
-    width: 100%;
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: 16px;
-    padding: 34px 30px 30px;
+    width: 100%; background: var(--surface); border: 1px solid var(--line);
+    border-radius: 16px; padding: 34px 30px 30px;
     box-shadow: 0 18px 44px -28px rgba(var(--shadow), .5);
   }
-  .eyebrow {
-    font-size: 11px;
-    letter-spacing: .16em;
-    text-transform: uppercase;
-    font-weight: 700;
-    color: var(--ink-soft);
-    margin: 0 0 14px;
-  }
-  .question {
-    font-size: clamp(23px, 5.2vw, 30px);
-    font-weight: 700;
-    line-height: 1.22;
-    letter-spacing: -0.02em;
-    text-wrap: balance;
-    margin: 0 0 8px;
-  }
-  .sub {
-    color: var(--ink-soft);
-    font-size: 14.5px;
-    line-height: 1.55;
-    margin: 0 0 24px;
-    text-wrap: pretty;
-  }
+  .eyebrow { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; font-weight: 700; color: var(--ink-soft); margin: 0 0 14px; }
+  .question { font-size: clamp(23px, 5.2vw, 30px); font-weight: 700; line-height: 1.22; letter-spacing: -0.02em; text-wrap: balance; margin: 0 0 8px; }
+  .sub { color: var(--ink-soft); font-size: 14.5px; line-height: 1.55; margin: 0 0 24px; text-wrap: pretty; }
 
   .options { display: flex; flex-direction: column; gap: 10px; }
   .opt {
-    appearance: none;
-    text-align: left;
-    font: inherit;
-    font-size: 15.5px;
-    font-weight: 600;
-    color: var(--ink);
-    background: var(--surface-2);
-    border: 1.5px solid transparent;
-    border-radius: 11px;
-    padding: 15px 16px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 12px;
+    appearance: none; text-align: left; font: inherit; font-size: 15.5px; font-weight: 600;
+    color: var(--ink); background: var(--surface-2); border: 1.5px solid transparent;
+    border-radius: 11px; padding: 15px 16px; cursor: pointer;
+    display: flex; align-items: center; gap: 12px;
     transition: transform .14s ease, border-color .14s ease;
   }
   .opt .emoji { font-size: 19px; line-height: 1; }
-  .opt:hover, .opt:focus-visible {
-    border-color: var(--accent);
-    transform: translateY(-1px);
-    outline: none;
-  }
+  .opt:hover, .opt:focus-visible { border-color: var(--accent); transform: translateY(-1px); outline: none; }
   .opt:focus-visible { box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 26%, transparent); }
   .opt:active { transform: translateY(0); }
 
-  /* ---------- Transitions ---------- */
   .swap-in { animation: swapIn .34s cubic-bezier(.2,.7,.2,1) both; }
   .swap-out { animation: swapOut .24s ease both; }
-  @keyframes swapIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to   { opacity: 1; transform: none; }
-  }
+  @keyframes swapIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
   @keyframes swapOut { from { opacity: 1; } to { opacity: 0; transform: translateY(-8px); } }
 
-  .back {
-    margin-top: 20px;
-    background: none; border: none;
-    color: var(--ink-soft);
-    font: inherit; font-size: 13.5px;
-    cursor: pointer; padding: 4px 0;
-  }
+  .back { margin-top: 20px; background: none; border: none; color: var(--ink-soft); font: inherit; font-size: 13.5px; cursor: pointer; padding: 4px 0; }
   .back:hover { color: var(--accent); }
   .back[hidden] { display: none; }
 
-  /* ---------- Finale ---------- */
   .recap { display: flex; flex-wrap: wrap; gap: 8px; margin: 2px 0 22px; }
-  .chip {
-    background: var(--surface-2);
-    color: var(--ink);
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    padding: 6px 12px;
-    font-size: 12.5px;
-    font-weight: 600;
-  }
-  .plan-line {
-    font-size: 16px;
-    line-height: 1.5;
-    color: var(--ink);
-    margin: 0 0 24px;
-    text-wrap: pretty;
-  }
+  .chip { background: var(--surface-2); color: var(--ink); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; font-size: 12.5px; font-weight: 600; }
+  .plan-line { font-size: 16px; line-height: 1.5; color: var(--ink); margin: 0 0 24px; text-wrap: pretty; }
   .plan-line b { font-weight: 700; color: var(--accent-deep); }
 
-  .ask-zone {
-    position: relative;
-    min-height: 70px;
-    display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
-  }
+  .ask-zone { position: relative; min-height: 70px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
   .btn-yes {
-    appearance: none; font: inherit;
-    font-weight: 700; font-size: 16px;
-    color: #fff;
-    background: var(--accent);
-    border: none; border-radius: 11px;
-    padding: 15px 26px; cursor: pointer;
-    box-shadow: 0 10px 24px -12px var(--accent-deep);
-    transition: transform .16s ease, background .16s ease;
+    appearance: none; font: inherit; font-weight: 700; font-size: 16px; color: #fff;
+    background: var(--accent); border: none; border-radius: 11px; padding: 15px 26px; cursor: pointer;
+    box-shadow: 0 10px 24px -12px var(--accent-deep); transition: transform .16s ease, background .16s ease;
   }
-  .btn-yes:hover, .btn-yes:focus-visible {
-    transform: scale(1.04); background: var(--accent-deep); outline: none;
-  }
+  .btn-yes:hover, .btn-yes:focus-visible { transform: scale(1.04); background: var(--accent-deep); outline: none; }
   .btn-no {
-    appearance: none; font: inherit;
-    font-weight: 600; font-size: 14.5px;
-    color: var(--ink-soft);
-    background: var(--surface-2);
-    border: 1.5px solid var(--line);
-    border-radius: 11px;
-    padding: 12px 20px; cursor: pointer;
-    transition: transform .12s ease, font-size .2s ease, padding .2s ease;
+    appearance: none; font: inherit; font-weight: 600; font-size: 14.5px; color: var(--ink-soft);
+    background: var(--surface-2); border: 1.5px solid var(--line); border-radius: 11px;
+    padding: 12px 20px; cursor: pointer; transition: transform .12s ease, font-size .2s ease, padding .2s ease;
   }
 
-  /* ---------- Result screen ---------- */
   .yay { text-align: left; }
-  .yay .big {
-    font-size: clamp(26px, 6vw, 36px);
-    font-weight: 700; letter-spacing: -0.02em;
-    line-height: 1.15; margin: 4px 0 12px;
-    text-wrap: balance;
-  }
+  .yay .big { font-size: clamp(26px, 6vw, 36px); font-weight: 700; letter-spacing: -0.02em; line-height: 1.15; margin: 4px 0 12px; text-wrap: balance; }
   .yay p { color: var(--ink-soft); font-size: 15px; line-height: 1.6; margin: 0; max-width: 44ch; }
-  .yay .seal {
-    display: inline-block; margin: 20px 0 2px;
-    font-size: 14px; font-weight: 700; color: var(--accent-deep);
-    letter-spacing: .02em;
+  .yay .seal { display: inline-block; margin: 20px 0 2px; font-size: 14px; font-weight: 700; color: var(--accent-deep); letter-spacing: .02em; }
+  .restart {
+    margin-top: 26px; appearance: none; font: inherit; font-size: 13.5px; font-weight: 600;
+    color: var(--ink-soft); background: none; border: 1px solid var(--line); border-radius: 999px;
+    padding: 9px 16px; cursor: pointer;
   }
-  canvas.confetti { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
+  .restart:hover { color: var(--accent); border-color: var(--accent); }
 
+  canvas.confetti { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
   .footer { color: var(--ink-soft); font-size: 12px; opacity: .85; text-align: center; }
 
   @media (prefers-reduced-motion: reduce) {
@@ -236,27 +121,42 @@
   "use strict";
 
   /* ===============================================================
-     HOW TO EDIT THIS
-     ---------------------------------------------------------------
-     Everything you'd customize lives in the TREE object below.
-     Each node is a question:
-        eyebrow  = the small label up top (e.g. "Step 1 of 4")
-        q        = the question text
-        sub      = optional smaller helper line ("" to hide)
-        options  = the answer buttons. Each button has:
-              emoji  = little icon (or "")
-              label  = button text
-              chip   = short word shown in the final recap
-              next   = id of the next question, or "finale" to end
+     1) LOGGING CONFIG  — paste your Google Apps Script URL here.
+     Leave it as "" and the page still works, it just won't log.
+     Get this URL by following SETUP.md (takes ~5 minutes).
+  ================================================================ */
+  var CONFIG = {
+    logEndpoint: ""   // <-- paste your https://script.google.com/.../exec URL between the quotes
+  };
 
-     The flow is: LOCATION -> GYM -> FOOD -> UFC -> finale.
-     Right now the location options and everything downstream are
-     PLACEHOLDERS. Send me the real spots and I'll drop them in.
-     Every path still ends on the same question: make tomorrow a date?
+  // A tag so you can tell test runs apart from the real one.
+  // Send a friend the link with  ?by=friend  and they'll show up labelled "friend".
+  var BY = (new URLSearchParams(location.search).get("by") || "her").slice(0, 40);
+  var SESSION = Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 7);
+  var completed = false;
+
+  function logEvent(type, extra) {
+    if (!CONFIG.logEndpoint) return;
+    try {
+      var payload = {
+        ts: new Date().toISOString(),
+        by: BY, session: SESSION, type: type,
+        chips: state.chips.slice(), node: state.node
+      };
+      if (extra) for (var k in extra) payload[k] = extra[k];
+      var body = JSON.stringify(payload);
+      var blob = new Blob([body], { type: "text/plain;charset=UTF-8" });
+      if (navigator.sendBeacon) navigator.sendBeacon(CONFIG.logEndpoint, blob);
+      else fetch(CONFIG.logEndpoint, { method: "POST", mode: "no-cors", body: body, keepalive: true });
+    } catch (e) { /* logging must never break the page */ }
+  }
+
+  /* ===============================================================
+     2) THE QUESTIONS  — flow is LOCATION -> GYM -> FOOD -> UFC.
+     Everything below is placeholder. Send me the real spots and
+     I'll drop them straight in. All paths end on the same question.
   ================================================================ */
   var TREE = {
-
-    /* ---------- STEP 1: LOCATION ---------- */
     start: {
       eyebrow: "Step 1 of 4",
       q: "First — where are we basing ourselves tomorrow?",
@@ -268,96 +168,56 @@
       ]
     },
 
-    /* ============ LOCATION A path ============ */
-    A_gym: {
-      eyebrow: "Step 2 of 4",
-      q: "Cool. Gym first — what are we hitting?",
-      sub: "",
+    A_gym: { eyebrow: "Step 2 of 4", q: "Cool. Gym first — what are we hitting?", sub: "",
       options: [
         { emoji: "🏋️", label: "Gym option A1  (fill in)", chip: "gym: A1", next: "A_food" },
         { emoji: "🤸", label: "Gym option A2  (fill in)", chip: "gym: A2", next: "A_food" }
-      ]
-    },
-    A_food: {
-      eyebrow: "Step 3 of 4",
-      q: "Post-workout food — pick your poison:",
-      sub: "",
+      ] },
+    A_food: { eyebrow: "Step 3 of 4", q: "Post-workout food — pick your poison:", sub: "",
       options: [
         { emoji: "🍽️", label: "Food option A1  (fill in)", chip: "food: A1", next: "A_ufc" },
         { emoji: "🥡", label: "Food option A2  (fill in)", chip: "food: A2", next: "A_ufc" }
-      ]
-    },
-    A_ufc: {
-      eyebrow: "Step 4 of 4",
-      q: "And the fights — where do we watch UFC?",
-      sub: "",
+      ] },
+    A_ufc: { eyebrow: "Step 4 of 4", q: "And the fights — where do we watch UFC?", sub: "",
       options: [
         { emoji: "🥊", label: "UFC option A1  (fill in)", chip: "UFC: A1", next: "finale" },
         { emoji: "📺", label: "UFC option A2  (fill in)", chip: "UFC: A2", next: "finale" }
-      ]
-    },
+      ] },
 
-    /* ============ LOCATION B path ============ */
-    B_gym: {
-      eyebrow: "Step 2 of 4",
-      q: "Nice. Gym first — what are we hitting?",
-      sub: "",
+    B_gym: { eyebrow: "Step 2 of 4", q: "Nice. Gym first — what are we hitting?", sub: "",
       options: [
         { emoji: "🏋️", label: "Gym option B1  (fill in)", chip: "gym: B1", next: "B_food" },
         { emoji: "🤸", label: "Gym option B2  (fill in)", chip: "gym: B2", next: "B_food" }
-      ]
-    },
-    B_food: {
-      eyebrow: "Step 3 of 4",
-      q: "Then food — pick your poison:",
-      sub: "",
+      ] },
+    B_food: { eyebrow: "Step 3 of 4", q: "Then food — pick your poison:", sub: "",
       options: [
         { emoji: "🍽️", label: "Food option B1  (fill in)", chip: "food: B1", next: "B_ufc" },
         { emoji: "🥡", label: "Food option B2  (fill in)", chip: "food: B2", next: "B_ufc" }
-      ]
-    },
-    B_ufc: {
-      eyebrow: "Step 4 of 4",
-      q: "And the fights — where do we watch UFC?",
-      sub: "",
+      ] },
+    B_ufc: { eyebrow: "Step 4 of 4", q: "And the fights — where do we watch UFC?", sub: "",
       options: [
         { emoji: "🥊", label: "UFC option B1  (fill in)", chip: "UFC: B1", next: "finale" },
         { emoji: "📺", label: "UFC option B2  (fill in)", chip: "UFC: B2", next: "finale" }
-      ]
-    },
+      ] },
 
-    /* ============ LOCATION C path ============ */
-    C_gym: {
-      eyebrow: "Step 2 of 4",
-      q: "Let's go. Gym first — what are we hitting?",
-      sub: "",
+    C_gym: { eyebrow: "Step 2 of 4", q: "Let's go. Gym first — what are we hitting?", sub: "",
       options: [
         { emoji: "🏋️", label: "Gym option C1  (fill in)", chip: "gym: C1", next: "C_food" },
         { emoji: "🤸", label: "Gym option C2  (fill in)", chip: "gym: C2", next: "C_food" }
-      ]
-    },
-    C_food: {
-      eyebrow: "Step 3 of 4",
-      q: "Food after — pick your poison:",
-      sub: "",
+      ] },
+    C_food: { eyebrow: "Step 3 of 4", q: "Food after — pick your poison:", sub: "",
       options: [
         { emoji: "🍽️", label: "Food option C1  (fill in)", chip: "food: C1", next: "C_ufc" },
         { emoji: "🥡", label: "Food option C2  (fill in)", chip: "food: C2", next: "C_ufc" }
-      ]
-    },
-    C_ufc: {
-      eyebrow: "Step 4 of 4",
-      q: "And the fights — where do we watch UFC?",
-      sub: "",
+      ] },
+    C_ufc: { eyebrow: "Step 4 of 4", q: "And the fights — where do we watch UFC?", sub: "",
       options: [
         { emoji: "🥊", label: "UFC option C1  (fill in)", chip: "UFC: C1", next: "finale" },
         { emoji: "📺", label: "UFC option C2  (fill in)", chip: "UFC: C2", next: "finale" }
-      ]
-    }
+      ] }
   };
 
   var TOTAL_STEPS = 4;
-
   var card  = document.getElementById("card");
   var trail = document.getElementById("trail");
   var state = { node: "start", chips: [], history: [] };
@@ -381,7 +241,6 @@
     var node = TREE[id];
     state.node = id;
     renderTrail();
-
     var html = "";
     html += '<p class="eyebrow">' + node.eyebrow + "</p>";
     html += '<h1 class="question">' + node.q + "</h1>";
@@ -394,7 +253,6 @@
     });
     html += "</div>";
     html += '<button class="back"' + (state.history.length ? "" : " hidden") + ">← go back</button>";
-
     swap(html, animate);
 
     Array.prototype.forEach.call(card.querySelectorAll(".opt"), function (btn) {
@@ -402,13 +260,13 @@
         var opt = node.options[parseInt(btn.dataset.i, 10)];
         state.history.push({ node: id });
         state.chips.push(opt.chip);
+        logEvent("answer", { step: node.eyebrow, choice: opt.label });
         if (opt.next === "finale") renderFinale();
         else renderNode(opt.next, true);
       });
     });
     var back = card.querySelector(".back");
     if (back) back.addEventListener("click", goBack);
-
     var first = card.querySelector(".opt");
     if (first) first.focus({ preventScroll: true });
   }
@@ -432,13 +290,12 @@
     }, reduced ? 0 : 200);
   }
 
-  /* ---------- finale: the question ---------- */
   function renderFinale() {
     state.node = "finale";
     renderTrail();
-
     var chipHtml = state.chips.map(function (c) { return '<span class="chip">' + c + "</span>"; }).join("");
     var plan = buildPlan(state.chips);
+    logEvent("reached_question", { plan: planText(state.chips) });
 
     var html = "";
     html += '<p class="eyebrow">Here\'s the plan you built</p>';
@@ -451,11 +308,17 @@
               '<button class="btn-yes" id="yes">Yeah, it\'s a date</button>' +
               '<button class="btn-no" id="no">no</button>' +
             "</div>";
-
     swap(html, true);
     setTimeout(wireFinale, 220);
   }
 
+  function planText(chips) {
+    var loc  = chips[0] || "wherever";
+    var gym  = (chips[1] || "gym").replace(/^gym: /, "");
+    var food = (chips[2] || "food").replace(/^food: /, "");
+    var ufc  = (chips[3] || "the fights").replace(/^UFC: /, "");
+    return loc + " -> " + gym + " -> " + food + " -> UFC at " + ufc;
+  }
   function buildPlan(chips) {
     var loc  = chips[0] || "wherever";
     var gym  = (chips[1] || "gym").replace(/^gym: /, "");
@@ -471,7 +334,8 @@
     if (!yes || !no) return;
     var ask = document.getElementById("ask");
     var dodges = 0;
-    var taunts = ["no", "you sure?", "really?", "try again", "can't click me", "just say yes", "nope"];
+    var taunts = ["no", "you sure?", "really?"];
+    var MAX_DODGE = 3; // after this the "no" settles and is genuinely clickable, so a real no is captured
 
     function dodge() {
       dodges++;
@@ -480,32 +344,66 @@
       no.style.position = "absolute";
       no.style.left = Math.random() * Math.max(0, w - nb.width) + "px";
       no.style.top  = Math.random() * Math.max(40, h - nb.height) + "px";
-      var shrink = Math.max(0.6, 1 - dodges * 0.08);
-      no.style.fontSize = (14.5 * shrink) + "px";
-      no.style.padding = (12 * shrink) + "px " + (20 * shrink) + "px";
       no.textContent = taunts[Math.min(dodges, taunts.length - 1)];
-      yes.style.transform = "scale(" + (1 + Math.min(dodges, 6) * 0.05) + ")";
+      yes.style.transform = "scale(" + (1 + Math.min(dodges, 4) * 0.05) + ")";
+    }
+    function onNoHover() { if (dodges < MAX_DODGE) dodge(); }
+    function onNoClick(e) {
+      if (dodges < MAX_DODGE) { e.preventDefault(); dodge(); return; }
+      declined(planText(state.chips));
     }
 
-    no.addEventListener("mouseenter", dodge);
-    no.addEventListener("focus", dodge);
-    no.addEventListener("click", function (e) { e.preventDefault(); dodge(); });
-    no.addEventListener("touchstart", function (e) { e.preventDefault(); dodge(); }, { passive: false });
-    yes.addEventListener("click", celebrate);
+    no.addEventListener("mouseenter", onNoHover);
+    no.addEventListener("focus", onNoHover);
+    no.addEventListener("click", onNoClick);
+    no.addEventListener("touchstart", function (e) { if (dodges < MAX_DODGE) { e.preventDefault(); dodge(); } }, { passive: false });
+    yes.addEventListener("click", function () { celebrate(planText(state.chips)); });
   }
 
-  function celebrate() {
+  function celebrate(plan) {
+    completed = true;
+    logEvent("yes", { plan: plan });
     var html = "";
     html += '<div class="yay">';
     html += '<p class="eyebrow" style="color:var(--accent-deep)">Done deal</p>';
     html += '<h1 class="big">It\'s a date.</h1>';
     html += "<p>You planned the whole thing yourself, so no backing out now. Gym, food, fights — same as always, just official this time.</p>";
-    html += '<span class="seal">See you tomorrow.</span>';
+    html += '<span class="seal">See you tomorrow.</span><br>';
+    html += '<button class="restart" id="restart">↺ start over</button>';
     html += "</div>";
     swap(html, true);
     trail.innerHTML = "";
+    setTimeout(wireRestart, 220);
     if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) setTimeout(runConfetti, 220);
   }
+
+  function declined(plan) {
+    completed = true;
+    logEvent("no", { plan: plan });
+    var html = "";
+    html += '<div class="yay">';
+    html += '<p class="eyebrow">All good</p>';
+    html += '<h1 class="big">No worries.</h1>';
+    html += "<p>The plan still stands as friends anytime — no pressure at all. Thanks for humouring the little quiz.</p>";
+    html += '<button class="restart" id="restart">↺ start over</button>';
+    html += "</div>";
+    swap(html, true);
+    trail.innerHTML = "";
+    setTimeout(wireRestart, 220);
+  }
+
+  function wireRestart() {
+    var r = document.getElementById("restart");
+    if (r) r.addEventListener("click", function () {
+      completed = false;
+      state = { node: "start", chips: [], history: [] };
+      SESSION = Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 7);
+      renderNode("start", true);
+    });
+  }
+
+  // Best-effort: if she closes/leaves before finishing, still record where she stopped.
+  addEventListener("pagehide", function () { if (!completed) logEvent("left"); });
 
   /* ---------- confetti (neutral squares) ---------- */
   function runConfetti() {
@@ -520,14 +418,10 @@
     var parts = [];
     for (var i = 0; i < 80; i++) {
       parts.push({
-        x: Math.random() * cv.width,
-        y: -Math.random() * cv.height * 0.4,
-        r: (5 + Math.random() * 7) * dpr,
-        vy: (2 + Math.random() * 3.2) * dpr,
-        vx: (Math.random() - 0.5) * 2 * dpr,
-        rot: Math.random() * Math.PI,
-        vr: (Math.random() - 0.5) * 0.2,
-        c: colors[i % colors.length]
+        x: Math.random() * cv.width, y: -Math.random() * cv.height * 0.4,
+        r: (5 + Math.random() * 7) * dpr, vy: (2 + Math.random() * 3.2) * dpr,
+        vx: (Math.random() - 0.5) * 2 * dpr, rot: Math.random() * Math.PI,
+        vr: (Math.random() - 0.5) * 0.2, c: colors[i % colors.length]
       });
     }
     var start = Date.now(), fadeStart;
@@ -540,8 +434,7 @@
         ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot);
         ctx.fillStyle = p.c; ctx.fillRect(-p.r / 2, -p.r / 2, p.r, p.r * 0.6); ctx.restore();
       });
-      if (t < 6000) requestAnimationFrame(frame);
-      else fade();
+      if (t < 6000) requestAnimationFrame(frame); else fade();
     }
     function fade() {
       if (!fadeStart) fadeStart = Date.now();
@@ -553,6 +446,7 @@
     frame();
   }
 
+  logEvent("start");
   renderNode("start", false);
 })();
 </script>
