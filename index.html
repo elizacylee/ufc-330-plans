@@ -6,9 +6,9 @@
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#0B0B0D">
 <title>UFC 330 Plans</title>
-<meta name="description" content="Sorting out the plan for UFC 330 — pick where we go.">
+<meta name="description" content="Sorting out the plan for UFC 330, pick where we go.">
 <meta property="og:title" content="UFC 330 Plans 🥊">
-<meta property="og:description" content="Help me sort out the plan for UFC 330 — a few quick picks.">
+<meta property="og:description" content="Help me sort out the plan for UFC 330, a few quick picks.">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary">
 <style>
@@ -168,7 +168,7 @@
   <div class="masthead"><span class="oct">◆</span> <span class="tag">UFC 330</span> Fight Night</div>
   <div class="track" aria-hidden="true"><span class="fill" id="fill"></span></div>
   <section class="card" id="card" role="group" aria-live="polite"></section>
-  <p class="footer">no bad picks — it's all main card</p>
+  <p class="footer">no bad picks, it's all main card</p>
 </main>
 
 <script>
@@ -209,7 +209,7 @@
       sub: "(Everything's on me.)", next: "intro2" },
 
     intro2: { type: "info", p: .16,
-      msg: "I know you've been working hard and getting very little sleep, and you've been stressed with everything going on — so this is the least I can do.",
+      msg: "I know you've been working hard and getting very little sleep, and you've been stressed with everything going on, so this is the least I can do.",
       next: "intro3" },
 
     intro3: { type: "info", p: .24,
@@ -220,9 +220,9 @@
     ufc: { type: "question", p: .40, key: "ufc", tapeKey: "Watch",
       eyebrow: "The venue", q: "So… where would you like to watch UFC?", next: "matcha",
       options: [
-        { value: "A", label: "Rock & Brews — Redondo Beach", tape: "Rock & Brews (Redondo Beach)", link: maps("Rock & Brews Redondo Beach") },
-        { value: "B", label: "33 Taps — Silver Lake", tape: "33 Taps (Silver Lake)", link: maps("33 Taps Silver Lake") },
-        { value: "C", label: "33 Taps — WeHo", tape: "33 Taps (WeHo)", link: maps("33 Taps West Hollywood") },
+        { value: "A", label: "Rock & Brews, Redondo Beach", tape: "Rock & Brews (Redondo Beach)", link: maps("Rock & Brews Redondo Beach") },
+        { value: "B", label: "33 Taps, Silver Lake", tape: "33 Taps (Silver Lake)", link: maps("33 Taps Silver Lake") },
+        { value: "C", label: "33 Taps, WeHo", tape: "33 Taps (WeHo)", link: maps("33 Taps West Hollywood") },
         { value: "D", label: "Locally", tape: "Locally" },
         { value: "E", label: "Other…", input: true }
       ] },
@@ -247,8 +247,8 @@
           { value: "other", label: "Other…", input: true }
         ];
         if (s.picks.ufc === "B" || s.picks.ufc === "C") return [
-          { value: "mama", label: "Cafe de Mama — Los Angeles", tape: "Cafe de Mama", link: maps("Cafe de Mama Los Angeles") },
-          { value: "dura", label: "Dura Coffee — Los Angeles", tape: "Dura Coffee", link: maps("Dura Coffee Los Angeles") },
+          { value: "mama", label: "Cafe de Mama, Los Angeles", tape: "Cafe de Mama", link: maps("Cafe de Mama Los Angeles") },
+          { value: "dura", label: "Dura Coffee, Los Angeles", tape: "Dura Coffee", link: maps("Dura Coffee Los Angeles") },
           { value: "other", label: "Other…", input: true }
         ];
         // D (Locally) or E (Other) → just a text box
@@ -260,16 +260,16 @@
       eyebrow: "The gym", q: "Where would you like to gym?", next: "eat",
       options: function (s) {
         if (s.picks.ufc === "A") return [
-          { value: "sepulveda", label: "LA Fitness — 908 W. Sepulveda Blvd, Harbor City", tape: "LA Fitness (Harbor City)", link: maps("LA Fitness 908 W Sepulveda Blvd Harbor City") },
-          { value: "cerritos",  label: "LA Fitness — 10802 Alondra Blvd, Cerritos", tape: "LA Fitness (Cerritos)", link: maps("LA Fitness 10802 Alondra Blvd Cerritos") },
-          { value: "baldwin",   label: "LA Fitness — Baldwin Park", tape: "LA Fitness (Baldwin Park)", link: maps("LA Fitness Baldwin Park") },
+          { value: "sepulveda", label: "LA Fitness, 908 W. Sepulveda Blvd, Harbor City", tape: "LA Fitness (Harbor City)", link: maps("LA Fitness 908 W Sepulveda Blvd Harbor City") },
+          { value: "cerritos",  label: "LA Fitness, 10802 Alondra Blvd, Cerritos", tape: "LA Fitness (Cerritos)", link: maps("LA Fitness 10802 Alondra Blvd Cerritos") },
+          { value: "baldwin",   label: "LA Fitness, Baldwin Park", tape: "LA Fitness (Baldwin Park)", link: maps("LA Fitness Baldwin Park") },
           { value: "other", label: "Other…", input: true }
         ];
         return [
-          { value: "baldwin",  label: "LA Fitness — Baldwin Park", tape: "LA Fitness (Baldwin Park)", link: maps("LA Fitness Baldwin Park") },
-          { value: "arcadia",  label: "LA Fitness — Arcadia", tape: "LA Fitness (Arcadia)", link: maps("LA Fitness Arcadia") },
-          { value: "alhambra", label: "LA Fitness — Alhambra", tape: "LA Fitness (Alhambra)", link: maps("LA Fitness Alhambra") },
-          { value: "monterey", label: "LA Fitness — Monterey Park", tape: "LA Fitness (Monterey Park)", link: maps("LA Fitness Monterey Park") },
+          { value: "baldwin",  label: "LA Fitness, Baldwin Park", tape: "LA Fitness (Baldwin Park)", link: maps("LA Fitness Baldwin Park") },
+          { value: "arcadia",  label: "LA Fitness, Arcadia", tape: "LA Fitness (Arcadia)", link: maps("LA Fitness Arcadia") },
+          { value: "alhambra", label: "LA Fitness, Alhambra", tape: "LA Fitness (Alhambra)", link: maps("LA Fitness Alhambra") },
+          { value: "monterey", label: "LA Fitness, Monterey Park", tape: "LA Fitness (Monterey Park)", link: maps("LA Fitness Monterey Park") },
           { value: "other", label: "Other…", input: true }
         ];
       } },
@@ -298,7 +298,7 @@
     /* ---- Q: where do you stand (soft / heartfelt) ---- */
     clarity: { type: "question", p: .92, key: "clarity", soft: true,
       eyebrow: "Straight up",
-      q: "A lot of people have been noticing, and I've started to notice too… I feel like we've grown into more than a normal friendship. I know we're on different wavelengths, so — for the sake of clarity — I wanted to ask where you stand.",
+      q: "A lot of people have been noticing, and I've started to notice too… I feel like we've grown into more than a normal friendship. I know we're on different wavelengths, so, for the sake of clarity, I wanted to ask where you stand.",
       noteKey: "Where she stands",
       next: function (s) { return s.picks.clarity === "yes" ? "dateAsk" : "standing"; },
       options: [
@@ -310,7 +310,7 @@
     /* ---- the ask ---- */
     dateAsk: { type: "question", p: .96, key: "dateAsk", gold: true, recap: true, noteKey: "Date tomorrow",
       eyebrow: "Main event",
-      q: "Can I take you on a date tomorrow — with all this planned?",
+      q: "Can I take you on a date tomorrow, with all this planned?",
       next: function (s) { return s.picks.dateAsk === "yes" ? "celebrate" : "standing"; },
       options: [
         { value: "yes",   emoji: "🥊", label: "Yes" },
@@ -321,10 +321,10 @@
     /* ---- if it's not a yes: where do we go from here ---- */
     standing: { type: "question", p: 1, key: "standing", soft: true, noteKey: "Next step",
       eyebrow: "Where we go from here",
-      q: "Totally okay — thank you for being honest. Where would you like to go from here?",
+      q: "Totally okay, thank you for being honest. Where would you like to go from here?",
       next: "close",
       options: [
-        { value: "neutral", label: "Let's still hang tomorrow — just keep it chill for now" },
+        { value: "neutral", label: "Let's still hang tomorrow, just keep it chill for now" },
         { value: "space",   label: "Let's skip tomorrow and take a little space to figure us out" },
         { value: "talk",    label: "Can we actually talk about this first?" },
         { value: "other",   label: "Other…", input: true }
@@ -359,15 +359,16 @@
     html += '<p class="msg">' + node.msg + "</p>";
     if (node.sub) html += '<p class="sub">' + node.sub + "</p>";
     html += '<div class="ask-zone" style="margin-top:22px"><button class="btn-yes" id="cont">Continue ›</button></div>';
-    html += '<button class="back"' + (state.history.length ? "" : " hidden") + ">‹ back</button>";
-    swap(html, animate);
-    card.querySelector("#cont").addEventListener("click", function () {
-      logEvent("seen", { step: id });
-      state.history.push(snapshot(id));
-      render(resolve(node.next), true);
+    html += '<button class="back"' + (state.history.length ? "" : " hidden") + ">back</button>";
+    swap(html, animate, function () {
+      card.querySelector("#cont").addEventListener("click", function () {
+        logEvent("seen", { step: id });
+        state.history.push(snapshot(id));
+        render(resolve(node.next), true);
+      });
+      wireBack();
+      focusFirst("#cont");
     });
-    wireBack();
-    focusFirst("#cont");
   }
 
   /* ---- question slide ---- */
@@ -396,22 +397,22 @@
       });
       html += "</div>";
     }
-    html += '<button class="back"' + (state.history.length ? "" : " hidden") + ">‹ back</button>";
-    swap(html, animate);
-
-    if (solo) {
-      wireInput(function (text) { commit(id, node, opts[0], text); });
-    } else {
-      Array.prototype.forEach.call(card.querySelectorAll(".opt"), function (btn) {
-        btn.addEventListener("click", function () {
-          var opt = opts[parseInt(btn.dataset.i, 10)];
-          if (opt.input) return showInput(id, node, opt);
-          commit(id, node, opt, opt.tape || opt.label);
+    html += '<button class="back"' + (state.history.length ? "" : " hidden") + ">back</button>";
+    swap(html, animate, function () {
+      if (solo) {
+        wireInput(function (text) { commit(id, node, opts[0], text); });
+      } else {
+        Array.prototype.forEach.call(card.querySelectorAll(".opt"), function (btn) {
+          btn.addEventListener("click", function () {
+            var opt = opts[parseInt(btn.dataset.i, 10)];
+            if (opt.input) return showInput(id, node, opt);
+            commit(id, node, opt, opt.tape || opt.label);
+          });
         });
-      });
-    }
-    wireBack();
-    if (!solo) focusFirst(".opt");
+      }
+      wireBack();
+      if (!solo) focusFirst(".opt");
+    });
   }
 
   /* record an answer and advance */
@@ -455,11 +456,16 @@
   }
   function focusFirst(sel) { var el = card.querySelector(sel); if (el) el.focus({ preventScroll: true }); }
 
-  function swap(html, animate) {
-    if (!animate) { card.innerHTML = html; card.classList.add("swap-in"); return; }
+  function swap(html, animate, after) {
+    function apply() {
+      card.innerHTML = html;
+      card.classList.remove("swap-out"); card.classList.add("swap-in");
+      if (after) after();
+    }
+    if (!animate) { card.classList.remove("swap-in"); apply(); return; }
     card.classList.remove("swap-in"); card.classList.add("swap-out");
     var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    setTimeout(function () { card.classList.remove("swap-out"); card.innerHTML = html; card.classList.add("swap-in"); }, reduced ? 0 : 190);
+    setTimeout(apply, reduced ? 0 : 190);
   }
 
   /* ============ ENDINGS ============ */
@@ -475,31 +481,31 @@
 
   /* she said yes */
   function accepted(animate) {
-    completed = true;
-    logEvent("yes", { plan: planText(), answer: "Yes — it's a date" });
+    completed = true; setProgress(1);
+    logEvent("yes", { plan: planText(), answer: "Yes, it's a date" });
     var html = '<div class="yay">' +
       '<p class="eyebrow gold">And still… by unanimous decision</p>' +
       '<h1 class="big">It\'s a <em>date.</em></h1>' +
-      "<p>You booked the whole card yourself — fights, matcha, the works. Everything's on me. No rematch clause; the decision stands.</p>" +
-      '<span class="seal">See you tomorrow · 🥊</span><br>' +
+      "<p>You booked the whole card yourself. Fights, matcha, the works. Everything's on me, and the decision stands.</p>" +
+      '<span class="seal">See you tomorrow 🥊</span><br>' +
       '<button class="restart" id="restart">↺ run it back</button></div>';
-    swap(html, animate !== false); setProgress(1);
-    setTimeout(wireRestart, 210);
-    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) setTimeout(runConfetti, 210);
+    swap(html, animate !== false, function () {
+      wireRestart();
+      if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) runConfetti();
+    });
   }
 
-  /* anything that isn't a yes — respectful close */
+  /* anything that isn't a yes: respectful close */
   function renderClose(animate) {
-    completed = true;
+    completed = true; setProgress(1);
     logEvent("no", { plan: planText(), answer: lastNote() });
     var html = '<div class="yay">' +
-      '<p class="eyebrow">Noted — and thank you</p>' +
+      '<p class="eyebrow">Noted, and thank you</p>' +
       '<h1 class="big">Thanks for being real.</h1>' +
       "<p>That honesty genuinely means a lot, and there's zero pressure either way. Whatever we do next, I'm glad it's with you.</p>" +
       '<span class="seal">Talk soon.</span><br>' +
       '<button class="restart" id="restart">↺ run it back</button></div>';
-    swap(html, animate !== false); setProgress(1);
-    setTimeout(wireRestart, 210);
+    swap(html, animate !== false, function () { wireRestart(); });
   }
 
   function wireRestart() {
