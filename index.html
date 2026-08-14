@@ -7,33 +7,20 @@
 <meta name="theme-color" content="#0B0B0D">
 <title>UFC 330 Plans</title>
 <meta name="description" content="Sorting out the plan for UFC 330 — pick where we go.">
-<!-- Link-preview card (shows when the link is shared in Messages/WhatsApp/etc.) -->
 <meta property="og:title" content="UFC 330 Plans 🥊">
 <meta property="og:description" content="Help me sort out the plan for UFC 330 — a few quick picks.">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary">
 <style>
-  /* ---------- Fight-night palette (committed dark) ---------- */
   :root {
-    --ground:   #0B0B0D;
-    --panel:    #141418;
-    --panel-2:  #1C1C22;
-    --ink:      #F5F5F3;
-    --ink-soft: #9A9AA2;
-    --line:     #2A2A31;
-    --red:      #E0242B;
-    --red-deep: #A5151B;
-    --gold:     #E8C24A;
-    --gold-deep:#C79A28;
+    --ground:#0B0B0D; --panel:#141418; --panel-2:#1C1C22;
+    --ink:#F5F5F3; --ink-soft:#9A9AA2; --line:#2A2A31;
+    --red:#E0242B; --red-deep:#A5151B; --gold:#E8C24A; --gold-deep:#C79A28;
   }
-
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html { -webkit-text-size-adjust: 100%; }
-
   body {
-    margin: 0;
-    min-height: 100vh; min-height: 100dvh;
-    color: var(--ink);
+    margin: 0; min-height: 100vh; min-height: 100dvh; color: var(--ink);
     background:
       radial-gradient(120% 80% at 50% -10%, rgba(224,36,43,.18), transparent 55%),
       radial-gradient(100% 60% at 50% 115%, rgba(232,194,74,.08), transparent 60%),
@@ -42,69 +29,50 @@
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     padding: calc(22px + env(safe-area-inset-top)) calc(18px + env(safe-area-inset-right))
              calc(30px + env(safe-area-inset-bottom)) calc(18px + env(safe-area-inset-left));
-    -webkit-font-smoothing: antialiased;
-    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased; overflow-x: hidden;
   }
-
-  /* faint octagon "cage" behind everything */
   .cage {
     position: fixed; inset: 0; z-index: -1; pointer-events: none;
     background-repeat: no-repeat; background-position: center 46%;
-    background-size: min(88vmin, 640px);
-    opacity: .07;
+    background-size: min(88vmin, 640px); opacity: .07;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon points='30,4 70,4 96,30 96,70 70,96 30,96 4,70 4,30' fill='none' stroke='%23E0242B' stroke-width='0.7'/%3E%3Cpolygon points='34,10 66,10 90,34 90,66 66,90 34,90 10,66 10,34' fill='none' stroke='%23E0242B' stroke-width='0.4'/%3E%3C/svg%3E");
   }
-
   .stage { width: 100%; max-width: 540px; display: flex; flex-direction: column; align-items: center; gap: 16px; }
-
-  /* masthead */
   .masthead {
     display: flex; align-items: center; gap: 10px;
-    font-weight: 800; font-size: 12px; letter-spacing: .22em; text-transform: uppercase;
-    color: var(--ink-soft);
+    font-weight: 800; font-size: 12px; letter-spacing: .22em; text-transform: uppercase; color: var(--ink-soft);
   }
-  .masthead .tag {
-    color: #fff; background: var(--red); padding: 3px 8px; border-radius: 4px;
-    letter-spacing: .12em; box-shadow: 0 0 18px -6px var(--red);
-  }
+  .masthead .tag { color: #fff; background: var(--red); padding: 3px 8px; border-radius: 4px; letter-spacing: .12em; box-shadow: 0 0 18px -6px var(--red); }
   .masthead .oct { color: var(--red); font-size: 13px; }
 
-  /* round meter */
-  .trail { display: flex; gap: 6px; align-items: center; }
-  .trail .pip { width: 30px; height: 5px; border-radius: 1px; background: var(--line); transition: background .35s ease, box-shadow .35s ease; }
-  .trail .pip.done, .trail .pip.here { background: var(--red); box-shadow: 0 0 12px -3px var(--red); }
+  .track { width: 100%; max-width: 220px; height: 5px; background: var(--line); border-radius: 3px; overflow: hidden; }
+  .track .fill { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--red-deep), var(--red)); box-shadow: 0 0 12px -2px var(--red); transition: width .4s cubic-bezier(.2,.7,.2,1); }
 
   .card {
     width: 100%; background: linear-gradient(180deg, var(--panel), #101014);
-    border: 1px solid var(--line); border-radius: 6px;
-    padding: 30px 26px 26px; position: relative; overflow: hidden;
+    border: 1px solid var(--line); border-radius: 6px; padding: 30px 26px 26px;
+    position: relative; overflow: hidden;
     box-shadow: 0 30px 60px -30px #000, inset 0 1px 0 rgba(255,255,255,.03);
   }
-  .card::before {  /* red corner accent — fight-card edge */
-    content: ""; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
-    background: linear-gradient(var(--red), var(--red-deep));
-  }
+  .card::before { content: ""; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: linear-gradient(var(--red), var(--red-deep)); }
 
-  .eyebrow {
-    font-size: 11px; letter-spacing: .2em; text-transform: uppercase; font-weight: 800;
-    color: var(--red); margin: 0 0 12px; font-variant-numeric: tabular-nums;
-  }
+  .eyebrow { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; font-weight: 800; color: var(--red); margin: 0 0 12px; font-variant-numeric: tabular-nums; }
   .eyebrow.gold { color: var(--gold); }
 
   .question {
     font-family: "Arial Narrow", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-weight: 800; font-stretch: condensed;
-    text-transform: uppercase; letter-spacing: .005em;
-    font-size: clamp(24px, 6.6vw, 34px); line-height: 1.06;
-    text-wrap: balance; margin: 0 0 10px;
+    font-weight: 800; font-stretch: condensed; text-transform: uppercase; letter-spacing: .005em;
+    font-size: clamp(24px, 6.6vw, 34px); line-height: 1.06; text-wrap: balance; margin: 0 0 10px;
   }
-  .sub { color: var(--ink-soft); font-size: 14.5px; line-height: 1.55; margin: 0 0 22px; text-wrap: pretty; }
+  /* warm, sentence-case message for the intro slides */
+  .msg { font-size: clamp(19px, 4.8vw, 25px); font-weight: 600; line-height: 1.4; letter-spacing: -0.01em; margin: 2px 0 4px; text-wrap: pretty; }
+  .sub { color: var(--ink-soft); font-size: 14.5px; line-height: 1.55; margin: 6px 0 22px; text-wrap: pretty; }
 
   .options { display: flex; flex-direction: column; gap: 9px; }
+  .opt-row { display: flex; align-items: stretch; gap: 8px; }
   .opt {
-    appearance: none; text-align: left; font: inherit; font-size: 16px; font-weight: 600;
-    color: var(--ink); background: var(--panel-2); border: 1px solid var(--line);
-    border-left: 3px solid var(--line);
+    flex: 1 1 auto; appearance: none; text-align: left; font: inherit; font-size: 16px; font-weight: 600;
+    color: var(--ink); background: var(--panel-2); border: 1px solid var(--line); border-left: 3px solid var(--line);
     border-radius: 5px; padding: 15px 16px; min-height: 56px; cursor: pointer;
     display: flex; align-items: center; gap: 12px; touch-action: manipulation;
     transition: transform .14s ease, border-color .14s ease, background .14s ease, box-shadow .14s ease;
@@ -112,12 +80,34 @@
   .opt .emoji { font-size: 20px; line-height: 1; flex: none; }
   .opt .go { margin-left: auto; color: var(--ink-soft); font-weight: 800; transition: color .14s, transform .14s; }
   .opt:hover, .opt:focus-visible {
-    border-color: var(--red); border-left-color: var(--red);
-    background: #212128; transform: translateX(2px); outline: none;
+    border-color: var(--red); border-left-color: var(--red); background: #212128; transform: translateX(2px); outline: none;
     box-shadow: 0 0 0 1px var(--red), 0 12px 30px -18px var(--red);
   }
   .opt:hover .go, .opt:focus-visible .go { color: var(--red); transform: translateX(3px); }
   .opt:active { transform: translateX(0) scale(.995); }
+
+  .maplink {
+    flex: none; display: flex; align-items: center; gap: 5px; text-decoration: none;
+    font-size: 12px; font-weight: 700; letter-spacing: .04em; color: var(--gold);
+    background: rgba(232,194,74,.08); border: 1px solid rgba(232,194,74,.3); border-radius: 5px;
+    padding: 0 12px; touch-action: manipulation; white-space: nowrap;
+  }
+  .maplink:hover, .maplink:focus-visible { background: rgba(232,194,74,.16); border-color: var(--gold); outline: none; }
+
+  .inputwrap { display: flex; gap: 8px; margin-top: 4px; }
+  .tbox {
+    flex: 1 1 auto; font: inherit; font-size: 16px; color: var(--ink);
+    background: var(--panel-2); border: 1px solid var(--line); border-left: 3px solid var(--red);
+    border-radius: 5px; padding: 15px 16px; min-height: 56px; outline: none;
+  }
+  .tbox::placeholder { color: var(--ink-soft); }
+  .tbox:focus { border-color: var(--red); box-shadow: 0 0 0 1px var(--red); }
+  .confirm {
+    flex: none; appearance: none; font: inherit; font-weight: 800; text-transform: uppercase; letter-spacing: .04em;
+    font-size: 14px; color: #fff; background: linear-gradient(180deg, var(--red), var(--red-deep));
+    border: none; border-radius: 5px; padding: 0 18px; min-height: 56px; cursor: pointer; touch-action: manipulation;
+  }
+  .confirm:hover { box-shadow: 0 0 24px -6px var(--red); }
 
   .swap-in { animation: swapIn .32s cubic-bezier(.2,.7,.2,1) both; }
   .swap-out { animation: swapOut .22s ease both; }
@@ -128,29 +118,25 @@
   .back:hover { color: var(--red); }
   .back[hidden] { display: none; }
 
-  /* Tale of the tape recap */
   .tape { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin: 2px 0 20px; }
-  .tape .row { display: flex; justify-content: space-between; align-items: center; gap: 14px; padding: 11px 2px; border-bottom: 1px solid var(--line); }
+  .tape .row { display: flex; justify-content: space-between; align-items: baseline; gap: 14px; padding: 11px 2px; border-bottom: 1px solid var(--line); }
   .tape .row:last-child { border-bottom: none; }
-  .tape .k { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-soft); font-weight: 800; }
+  .tape .k { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-soft); font-weight: 800; flex: none; }
   .tape .v { font-size: 15px; font-weight: 700; text-align: right; color: var(--ink); }
 
-  .ask-zone { position: relative; min-height: 76px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .ask-zone { position: relative; min-height: 60px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
   .btn-yes {
     appearance: none; font-family: "Arial Narrow", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-weight: 800; font-stretch: condensed; text-transform: uppercase; letter-spacing: .04em;
-    font-size: 19px; color: #fff;
-    background: linear-gradient(180deg, var(--red), var(--red-deep));
-    border: none; border-radius: 5px; padding: 16px 28px; min-height: 56px; cursor: pointer;
-    touch-action: manipulation;
-    box-shadow: 0 0 26px -6px var(--red), inset 0 1px 0 rgba(255,255,255,.2);
+    font-weight: 800; font-stretch: condensed; text-transform: uppercase; letter-spacing: .04em; font-size: 19px; color: #fff;
+    background: linear-gradient(180deg, var(--red), var(--red-deep)); border: none; border-radius: 5px; padding: 16px 28px; min-height: 56px; cursor: pointer;
+    touch-action: manipulation; box-shadow: 0 0 26px -6px var(--red), inset 0 1px 0 rgba(255,255,255,.2);
     transition: transform .16s ease, box-shadow .16s ease;
   }
   .btn-yes:hover, .btn-yes:focus-visible { transform: scale(1.05); box-shadow: 0 0 40px -6px var(--red); outline: none; }
   .btn-no {
     appearance: none; font: inherit; font-weight: 700; font-size: 14.5px; color: var(--ink-soft);
-    background: var(--panel-2); border: 1px solid var(--line); border-radius: 5px;
-    padding: 13px 20px; cursor: pointer; touch-action: manipulation; text-transform: uppercase; letter-spacing: .06em;
+    background: var(--panel-2); border: 1px solid var(--line); border-radius: 5px; padding: 13px 20px; cursor: pointer;
+    touch-action: manipulation; text-transform: uppercase; letter-spacing: .06em;
     transition: transform .12s ease, font-size .2s ease, padding .2s ease;
   }
 
@@ -158,30 +144,19 @@
   .yay .big {
     font-family: "Arial Narrow", "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-weight: 800; font-stretch: condensed; text-transform: uppercase; letter-spacing: .01em;
-    font-size: clamp(30px, 8.5vw, 46px); line-height: 1.02; margin: 4px 0 12px; text-wrap: balance;
-    color: #fff;
+    font-size: clamp(30px, 8.5vw, 46px); line-height: 1.02; margin: 4px 0 12px; text-wrap: balance; color: #fff;
   }
   .yay .big em { color: var(--gold); font-style: normal; }
   .yay p { color: var(--ink-soft); font-size: 15px; line-height: 1.6; margin: 0; max-width: 44ch; }
   .yay .seal { display: inline-block; margin: 18px 0 2px; font-size: 13px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); }
-  .restart {
-    margin-top: 22px; appearance: none; font: inherit; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em;
-    color: var(--ink-soft); background: none; border: 1px solid var(--line); border-radius: 999px;
-    padding: 11px 18px; min-height: 44px; cursor: pointer; touch-action: manipulation;
-  }
+  .restart { margin-top: 22px; appearance: none; font: inherit; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-soft); background: none; border: 1px solid var(--line); border-radius: 999px; padding: 11px 18px; min-height: 44px; cursor: pointer; touch-action: manipulation; }
   .restart:hover { color: var(--red); border-color: var(--red); }
 
   canvas.confetti { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
   .footer { color: var(--ink-soft); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; opacity: .7; text-align: center; padding: 0 8px; font-weight: 700; }
 
-  @media (max-width: 380px) {
-    .card { padding: 24px 18px 20px; }
-    .opt { padding: 14px; min-height: 52px; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    * { animation-duration: .001ms !important; transition-duration: .001ms !important; }
-    .btn-yes:hover { transform: none; }
-  }
+  @media (max-width: 380px) { .card { padding: 24px 18px 20px; } .opt { padding: 14px; min-height: 52px; } .maplink { padding: 0 9px; } }
+  @media (prefers-reduced-motion: reduce) { * { animation-duration: .001ms !important; transition-duration: .001ms !important; } .btn-yes:hover { transform: none; } }
 </style>
 </head>
 <body>
@@ -191,7 +166,7 @@
 
 <main class="stage">
   <div class="masthead"><span class="oct">◆</span> <span class="tag">UFC 330</span> Fight Night</div>
-  <div class="trail" id="trail" aria-hidden="true"></div>
+  <div class="track" aria-hidden="true"><span class="fill" id="fill"></span></div>
   <section class="card" id="card" role="group" aria-live="polite"></section>
   <p class="footer">no bad picks — it's all main card</p>
 </main>
@@ -200,13 +175,10 @@
 (function () {
   "use strict";
 
-  /* ===============================================================
-     1) LOGGING CONFIG  — your Google Apps Script URL.
-  ================================================================ */
+  /* ============ LOGGING ============ */
   var CONFIG = {
     logEndpoint: "https://script.google.com/macros/s/AKfycbzZ_bFbiscDO0Ymq_of2qAxYXVYJ9nEvUezYMVfgcxI7r0-82brF-sTYUPYA1MWB-DgVw/exec"
   };
-
   var BY = (new URLSearchParams(location.search).get("by") || "her").slice(0, 40);
   var SESSION = Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 7);
   var completed = false;
@@ -214,7 +186,9 @@
   function logEvent(type, extra) {
     if (!CONFIG.logEndpoint) return;
     try {
-      var payload = { ts: new Date().toISOString(), by: BY, session: SESSION, type: type, chips: state.chips.slice(), node: state.node };
+      var chips = state.tape.map(function (t) { return t.k + ": " + t.v; });
+      var notes = state.notes.map(function (t) { return t.k + ": " + t.v; }).join("  |  ");
+      var payload = { ts: new Date().toISOString(), by: BY, session: SESSION, type: type, chips: chips, notes: notes, node: state.node };
       if (extra) for (var k in extra) payload[k] = extra[k];
       var body = JSON.stringify(payload);
       var blob = new Blob([body], { type: "text/plain;charset=UTF-8" });
@@ -223,281 +197,337 @@
     } catch (e) {}
   }
 
-  /* ===============================================================
-     2) THE QUESTIONS  — LOCATION -> GYM -> FOOD -> UFC.
-     Placeholders for now — send me the real spots to drop in.
-  ================================================================ */
-  var TREE = {
-    start: {
-      eyebrow: "Round 1 / 4",
-      q: "Where are we basing the night?",
-      sub: "This sets the whole card. Pick a side of town.",
-      options: [
-        { emoji: "📍", label: "Location A  (tell me the spot)", chip: "Location A", next: "A_gym" },
-        { emoji: "📍", label: "Location B  (tell me the spot)", chip: "Location B", next: "B_gym" },
-        { emoji: "📍", label: "Location C  (tell me the spot)", chip: "Location C", next: "C_gym" }
-      ]
-    },
+  /* Google Maps search link for a place name/address */
+  function maps(q) { return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q); }
 
-    A_gym: { eyebrow: "Round 2 / 4", q: "Warm-up: gym first — what are we hitting?", sub: "",
+  /* ============ THE FLOW ============ */
+  var NODES = {
+
+    /* ---- intro slides (no answer, just Continue) ---- */
+    intro1: { type: "info", p: .08,
+      msg: "We haven't had a day like this in a while, so I wanted to run it back.",
+      sub: "(Everything's on me.)", next: "intro2" },
+
+    intro2: { type: "info", p: .16,
+      msg: "I know you've been working hard and getting very little sleep, and you've been stressed with everything going on — so this is the least I can do.",
+      next: "intro3" },
+
+    intro3: { type: "info", p: .24,
+      msg: "I'm presuming you'll want to start watching from Mansur Abdul-Malik vs Dustin Stoltzfus.",
+      sub: "Say less. Let's build the day.", next: "ufc" },
+
+    /* ---- Q: where to watch UFC ---- */
+    ufc: { type: "question", p: .40, key: "ufc", tapeKey: "Watch",
+      eyebrow: "The venue", q: "So… where would you like to watch UFC?", next: "matcha",
       options: [
-        { emoji: "🏋️", label: "Gym option A1  (fill in)", chip: "gym: A1", next: "A_food" },
-        { emoji: "🤸", label: "Gym option A2  (fill in)", chip: "gym: A2", next: "A_food" }
-      ] },
-    A_food: { eyebrow: "Round 3 / 4", q: "Fuel up — post-workout food?", sub: "",
-      options: [
-        { emoji: "🍽️", label: "Food option A1  (fill in)", chip: "food: A1", next: "A_ufc" },
-        { emoji: "🥡", label: "Food option A2  (fill in)", chip: "food: A2", next: "A_ufc" }
-      ] },
-    A_ufc: { eyebrow: "Round 4 / 4", q: "Main card — where do we watch the fights?", sub: "",
-      options: [
-        { emoji: "🥊", label: "UFC option A1  (fill in)", chip: "UFC: A1", next: "finale" },
-        { emoji: "📺", label: "UFC option A2  (fill in)", chip: "UFC: A2", next: "finale" }
+        { value: "A", label: "Rock & Brews — Redondo Beach", tape: "Rock & Brews (Redondo Beach)", link: maps("Rock & Brews Redondo Beach") },
+        { value: "B", label: "33 Taps — Silver Lake", tape: "33 Taps (Silver Lake)", link: maps("33 Taps Silver Lake") },
+        { value: "C", label: "33 Taps — WeHo", tape: "33 Taps (WeHo)", link: maps("33 Taps West Hollywood") },
+        { value: "D", label: "Locally", tape: "Locally" },
+        { value: "E", label: "Other…", input: true }
       ] },
 
-    B_gym: { eyebrow: "Round 2 / 4", q: "Warm-up: gym first — what are we hitting?", sub: "",
+    /* ---- Q: matcha? ---- */
+    matcha: { type: "question", p: .52, key: "matcha", tapeKey: "Matcha",
+      eyebrow: "The matcha", q: "Would you like matcha?",
+      next: function (s) { return s.picks.matcha === "yes" ? "matchaLoc" : "gym"; },
       options: [
-        { emoji: "🏋️", label: "Gym option B1  (fill in)", chip: "gym: B1", next: "B_food" },
-        { emoji: "🤸", label: "Gym option B2  (fill in)", chip: "gym: B2", next: "B_food" }
-      ] },
-    B_food: { eyebrow: "Round 3 / 4", q: "Fuel up — food after?", sub: "",
-      options: [
-        { emoji: "🍽️", label: "Food option B1  (fill in)", chip: "food: B1", next: "B_ufc" },
-        { emoji: "🥡", label: "Food option B2  (fill in)", chip: "food: B2", next: "B_ufc" }
-      ] },
-    B_ufc: { eyebrow: "Round 4 / 4", q: "Main card — where do we watch the fights?", sub: "",
-      options: [
-        { emoji: "🥊", label: "UFC option B1  (fill in)", chip: "UFC: B1", next: "finale" },
-        { emoji: "📺", label: "UFC option B2  (fill in)", chip: "UFC: B2", next: "finale" }
+        { value: "yes", emoji: "🍵", label: "Yes", tape: "Yes" },
+        { value: "no",  emoji: "🚫", label: "No", tape: "No" },
+        { value: "other", label: "Other…", input: true }
       ] },
 
-    C_gym: { eyebrow: "Round 2 / 4", q: "Warm-up: gym first — what are we hitting?", sub: "",
+    /* ---- Q: where to get matcha (depends on UFC pick) ---- */
+    matchaLoc: { type: "question", p: .62, key: "matchaLoc", tapeKey: "Matcha spot",
+      eyebrow: "The matcha", q: "Where would you like to get matcha?", next: "gym",
+      options: function (s) {
+        if (s.picks.ufc === "A") return [
+          { value: "phin", label: "Phin Coffee", tape: "Phin Coffee", link: maps("Phin Coffee Los Angeles") },
+          { value: "amai", label: "Amai Tea & Cafe", tape: "Amai Tea & Cafe", link: maps("Amai Tea & Cafe Los Angeles") },
+          { value: "other", label: "Other…", input: true }
+        ];
+        if (s.picks.ufc === "B" || s.picks.ufc === "C") return [
+          { value: "mama", label: "Cafe de Mama — Los Angeles", tape: "Cafe de Mama", link: maps("Cafe de Mama Los Angeles") },
+          { value: "dura", label: "Dura Coffee — Los Angeles", tape: "Dura Coffee", link: maps("Dura Coffee Los Angeles") },
+          { value: "other", label: "Other…", input: true }
+        ];
+        // D (Locally) or E (Other) → just a text box
+        return [ { value: "other", solo: true, input: true, placeholder: "Where would you like to get matcha?" } ];
+      } },
+
+    /* ---- Q: gym (depends on UFC pick) ---- */
+    gym: { type: "question", p: .78, key: "gym", tapeKey: "Gym",
+      eyebrow: "The gym", q: "Where would you like to gym?", next: "eat",
+      options: function (s) {
+        if (s.picks.ufc === "A") return [
+          { value: "sepulveda", label: "LA Fitness — 908 W. Sepulveda Blvd, Harbor City", tape: "LA Fitness (Harbor City)", link: maps("LA Fitness 908 W Sepulveda Blvd Harbor City") },
+          { value: "cerritos",  label: "LA Fitness — 10802 Alondra Blvd, Cerritos", tape: "LA Fitness (Cerritos)", link: maps("LA Fitness 10802 Alondra Blvd Cerritos") },
+          { value: "baldwin",   label: "LA Fitness — Baldwin Park", tape: "LA Fitness (Baldwin Park)", link: maps("LA Fitness Baldwin Park") },
+          { value: "other", label: "Other…", input: true }
+        ];
+        return [
+          { value: "baldwin",  label: "LA Fitness — Baldwin Park", tape: "LA Fitness (Baldwin Park)", link: maps("LA Fitness Baldwin Park") },
+          { value: "arcadia",  label: "LA Fitness — Arcadia", tape: "LA Fitness (Arcadia)", link: maps("LA Fitness Arcadia") },
+          { value: "alhambra", label: "LA Fitness — Alhambra", tape: "LA Fitness (Alhambra)", link: maps("LA Fitness Alhambra") },
+          { value: "monterey", label: "LA Fitness — Monterey Park", tape: "LA Fitness (Monterey Park)", link: maps("LA Fitness Monterey Park") },
+          { value: "other", label: "Other…", input: true }
+        ];
+      } },
+
+    /* ---- Q: eat (depends on UFC pick) ---- */
+    eat: { type: "question", p: .74, key: "eat", tapeKey: "Eat",
+      eyebrow: "The food", q: "Would you like to go eat?", next: "lastq",
+      options: function (s) {
+        if (s.picks.ufc === "A") return [
+          { value: "bar",   label: "Eat at the bar", tape: "Eat at the bar" },
+          { value: "pier",  label: "Redondo Beach Pier", tape: "Redondo Beach Pier", link: maps("Redondo Beach Pier") },
+          { value: "sushi", label: "Sushi / poke", tape: "Sushi / poke" },
+          { value: "other", label: "Other…", input: true }
+        ];
+        return [
+          { value: "bar",   label: "Eat at the bar", tape: "Eat at the bar" },
+          { value: "sushi", label: "Sushi / poke", tape: "Sushi / poke" },
+          { value: "other", label: "Other…", input: true }
+        ];
+      } },
+
+    /* ---- intro: last question ---- */
+    lastq: { type: "info", p: .84, eyebrow: "One more",
+      msg: "Last question…", next: "clarity" },
+
+    /* ---- Q: where do you stand (soft / heartfelt) ---- */
+    clarity: { type: "question", p: .92, key: "clarity", soft: true,
+      eyebrow: "Straight up",
+      q: "A lot of people have been noticing, and I've started to notice too… I feel like we've grown into more than a normal friendship. I know we're on different wavelengths, so — for the sake of clarity — I wanted to ask where you stand.",
+      noteKey: "Where she stands",
+      next: function (s) { return s.picks.clarity === "yes" ? "dateAsk" : "standing"; },
       options: [
-        { emoji: "🏋️", label: "Gym option C1  (fill in)", chip: "gym: C1", next: "C_food" },
-        { emoji: "🤸", label: "Gym option C2  (fill in)", chip: "gym: C2", next: "C_food" }
+        { value: "yes",   emoji: "🤝", label: "Yes" },
+        { value: "no",    label: "No" },
+        { value: "other", label: "Other…", input: true }
       ] },
-    C_food: { eyebrow: "Round 3 / 4", q: "Fuel up — food after?", sub: "",
+
+    /* ---- the ask ---- */
+    dateAsk: { type: "question", p: .96, key: "dateAsk", gold: true, recap: true, noteKey: "Date tomorrow",
+      eyebrow: "Main event",
+      q: "Can I take you on a date tomorrow — with all this planned?",
+      next: function (s) { return s.picks.dateAsk === "yes" ? "celebrate" : "standing"; },
       options: [
-        { emoji: "🍽️", label: "Food option C1  (fill in)", chip: "food: C1", next: "C_ufc" },
-        { emoji: "🥡", label: "Food option C2  (fill in)", chip: "food: C2", next: "C_ufc" }
+        { value: "yes",   emoji: "🥊", label: "Yes" },
+        { value: "no",    label: "No" },
+        { value: "other", label: "Other…", input: true }
       ] },
-    C_ufc: { eyebrow: "Round 4 / 4", q: "Main card — where do we watch the fights?", sub: "",
+
+    /* ---- if it's not a yes: where do we go from here ---- */
+    standing: { type: "question", p: 1, key: "standing", soft: true, noteKey: "Next step",
+      eyebrow: "Where we go from here",
+      q: "Totally okay — thank you for being honest. Where would you like to go from here?",
+      next: "close",
       options: [
-        { emoji: "🥊", label: "UFC option C1  (fill in)", chip: "UFC: C1", next: "finale" },
-        { emoji: "📺", label: "UFC option C2  (fill in)", chip: "UFC: C2", next: "finale" }
+        { value: "neutral", label: "Let's still hang tomorrow — just keep it chill for now" },
+        { value: "space",   label: "Let's skip tomorrow and take a little space to figure us out" },
+        { value: "talk",    label: "Can we actually talk about this first?" },
+        { value: "other",   label: "Other…", input: true }
       ] }
   };
 
-  var TOTAL_STEPS = 4;
-  var card  = document.getElementById("card");
-  var trail = document.getElementById("trail");
-  var state = { node: "start", chips: [], history: [] };
+  /* ============ ENGINE ============ */
+  var card = document.getElementById("card");
+  var fill = document.getElementById("fill");
+  var state = { node: "intro1", tape: [], notes: [], history: [], picks: {} };
 
-  function stepIndex() {
-    var node = TREE[state.node];
-    if (!node) return TOTAL_STEPS;
-    var m = /Round (\d)/.exec(node.eyebrow || "");
-    return m ? parseInt(m[1], 10) - 1 : TOTAL_STEPS;
-  }
-  function renderTrail() {
-    var here = stepIndex(), html = "";
-    for (var i = 0; i < TOTAL_STEPS; i++) {
-      var cls = i < here ? "pip done" : (i === here ? "pip here" : "pip");
-      html += '<span class="' + cls + '"></span>';
-    }
-    trail.innerHTML = html;
-  }
+  function setProgress(p) { fill.style.width = Math.round((p || 0) * 100) + "%"; }
+  function resolve(v) { return (typeof v === "function") ? v(state) : v; }
 
-  function renderNode(id, animate) {
-    var node = TREE[id];
+  function snapshot(id) { return { node: id, tape: state.tape.slice(), notes: state.notes.slice(), picks: assign({}, state.picks) }; }
+  function assign(t, s) { for (var k in s) t[k] = s[k]; return t; }
+
+  function render(id, animate) {
+    if (id === "celebrate") return accepted(animate);
+    if (id === "close") return renderClose(animate);
+    var node = NODES[id];
     state.node = id;
-    renderTrail();
+    setProgress(node.p);
+    if (node.type === "info") return renderInfo(id, node, animate);
+    return renderQuestion(id, node, animate);
+  }
+
+  /* ---- info slide ---- */
+  function renderInfo(id, node, animate) {
     var html = "";
-    html += '<p class="eyebrow">' + node.eyebrow + "</p>";
-    html += '<h1 class="question">' + node.q + "</h1>";
+    if (node.eyebrow) html += '<p class="eyebrow gold">' + node.eyebrow + "</p>";
+    html += '<p class="msg">' + node.msg + "</p>";
     if (node.sub) html += '<p class="sub">' + node.sub + "</p>";
-    html += '<div class="options">';
-    node.options.forEach(function (opt, i) {
-      html += '<button class="opt" data-i="' + i + '">' +
-                (opt.emoji ? '<span class="emoji" aria-hidden="true">' + opt.emoji + "</span>" : "") +
-                "<span>" + opt.label + "</span>" +
-                '<span class="go" aria-hidden="true">›</span></button>';
+    html += '<div class="ask-zone" style="margin-top:22px"><button class="btn-yes" id="cont">Continue ›</button></div>';
+    html += '<button class="back"' + (state.history.length ? "" : " hidden") + ">‹ back</button>";
+    swap(html, animate);
+    card.querySelector("#cont").addEventListener("click", function () {
+      logEvent("seen", { step: id });
+      state.history.push(snapshot(id));
+      render(resolve(node.next), true);
     });
-    html += "</div>";
+    wireBack();
+    focusFirst("#cont");
+  }
+
+  /* ---- question slide ---- */
+  function renderQuestion(id, node, animate) {
+    var opts = resolve(node.options);
+    var solo = (opts.length === 1 && opts[0].solo);
+
+    var html = "";
+    if (node.eyebrow) html += '<p class="eyebrow' + (node.gold ? " gold" : "") + '">' + node.eyebrow + "</p>";
+    html += node.soft ? ('<p class="msg">' + node.q + "</p>") : ('<h1 class="question">' + node.q + "</h1>");
+    if (node.recap) html += tapeBlock();
+    if (node.sub) html += '<p class="sub">' + node.sub + "</p>";
+
+    if (solo) {
+      html += inputHTML(opts[0].placeholder || "Type your answer");
+    } else {
+      html += '<div class="options">';
+      opts.forEach(function (opt, i) {
+        html += '<div class="opt-row">';
+        html += '<button class="opt" data-i="' + i + '">' +
+                  (opt.emoji ? '<span class="emoji" aria-hidden="true">' + opt.emoji + "</span>" : "") +
+                  "<span>" + opt.label + "</span>" +
+                  '<span class="go" aria-hidden="true">›</span></button>';
+        if (opt.link) html += '<a class="maplink" href="' + opt.link + '" target="_blank" rel="noopener">📍 Google ↗</a>';
+        html += "</div>";
+      });
+      html += "</div>";
+    }
     html += '<button class="back"' + (state.history.length ? "" : " hidden") + ">‹ back</button>";
     swap(html, animate);
 
-    Array.prototype.forEach.call(card.querySelectorAll(".opt"), function (btn) {
-      btn.addEventListener("click", function () {
-        var opt = node.options[parseInt(btn.dataset.i, 10)];
-        state.history.push({ node: id });
-        state.chips.push(opt.chip);
-        logEvent("answer", { step: node.eyebrow, choice: opt.label });
-        if (opt.next === "finale") renderFinale();
-        else renderNode(opt.next, true);
+    if (solo) {
+      wireInput(function (text) { commit(id, node, opts[0], text); });
+    } else {
+      Array.prototype.forEach.call(card.querySelectorAll(".opt"), function (btn) {
+        btn.addEventListener("click", function () {
+          var opt = opts[parseInt(btn.dataset.i, 10)];
+          if (opt.input) return showInput(id, node, opt);
+          commit(id, node, opt, opt.tape || opt.label);
+        });
       });
-    });
-    var back = card.querySelector(".back");
-    if (back) back.addEventListener("click", goBack);
-    var first = card.querySelector(".opt");
-    if (first) first.focus({ preventScroll: true });
+    }
+    wireBack();
+    if (!solo) focusFirst(".opt");
   }
 
-  function goBack() {
-    if (!state.history.length) return;
-    var last = state.history.pop();
-    state.chips.pop();
-    renderNode(last.node, true);
+  /* record an answer and advance */
+  function commit(id, node, opt, val) {
+    state.history.push(snapshot(id));
+    if (node.key) state.picks[node.key] = opt.value;
+    if (node.tapeKey && val) state.tape.push({ k: node.tapeKey, v: val });
+    if (node.noteKey && val) state.notes.push({ k: node.noteKey, v: val });
+    logEvent("answer", { step: node.eyebrow || id, choice: val || opt.label });
+    render(resolve(node.next), true);
   }
+
+  /* swap the options area for a text box (Other) */
+  function showInput(id, node, opt) {
+    var wrap = card.querySelector(".options");
+    if (wrap) wrap.outerHTML = inputHTML("Type it here…");
+    wireInput(function (text) { commit(id, node, opt, text); });
+  }
+  function inputHTML(ph) {
+    return '<div class="inputwrap">' +
+             '<input class="tbox" id="tbox" type="text" autocomplete="off" placeholder="' + ph + '">' +
+             '<button class="confirm" id="confirm">OK ›</button></div>';
+  }
+  function wireInput(done) {
+    var box = card.querySelector("#tbox");
+    var btn = card.querySelector("#confirm");
+    function go() { var v = (box.value || "").trim(); if (!v) { box.focus(); return; } done(v); }
+    btn.addEventListener("click", go);
+    box.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); go(); } });
+    box.focus();
+  }
+
+  function wireBack() {
+    var b = card.querySelector(".back");
+    if (b) b.addEventListener("click", function () {
+      if (!state.history.length) return;
+      var snap = state.history.pop();
+      state.tape = snap.tape; state.notes = snap.notes; state.picks = snap.picks;
+      render(snap.node, true);
+    });
+  }
+  function focusFirst(sel) { var el = card.querySelector(sel); if (el) el.focus({ preventScroll: true }); }
 
   function swap(html, animate) {
     if (!animate) { card.innerHTML = html; card.classList.add("swap-in"); return; }
-    card.classList.remove("swap-in");
-    card.classList.add("swap-out");
+    card.classList.remove("swap-in"); card.classList.add("swap-out");
     var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    setTimeout(function () {
-      card.classList.remove("swap-out");
-      card.innerHTML = html;
-      card.classList.add("swap-in");
-    }, reduced ? 0 : 190);
+    setTimeout(function () { card.classList.remove("swap-out"); card.innerHTML = html; card.classList.add("swap-in"); }, reduced ? 0 : 190);
   }
 
-  function clean(chips) {
-    return {
-      loc:  chips[0] || "wherever",
-      gym:  (chips[1] || "gym").replace(/^gym: /, ""),
-      food: (chips[2] || "food").replace(/^food: /, ""),
-      ufc:  (chips[3] || "the fights").replace(/^UFC: /, "")
-    };
-  }
-  function planText(chips) {
-    var c = clean(chips);
-    return c.loc + " -> " + c.gym + " -> " + c.food + " -> UFC at " + c.ufc;
+  /* ============ ENDINGS ============ */
+  function planText() { return state.tape.map(function (t) { return t.k + ": " + t.v; }).join("  |  "); }
+  function noteText() { return state.notes.map(function (t) { return t.k + ": " + t.v; }).join("  |  "); }
+  function lastNote() { var n = state.notes[state.notes.length - 1]; return n ? n.v : ""; }
+  function tapeBlock() {
+    var rows = state.tape.map(function (t) {
+      return '<div class="row"><span class="k">' + t.k + '</span><span class="v">' + t.v + "</span></div>";
+    }).join("");
+    return '<div class="tape">' + rows + "</div>";
   }
 
-  function renderFinale() {
-    state.node = "finale";
-    renderTrail();
-    var c = clean(state.chips);
-    logEvent("reached_question", { plan: planText(state.chips) });
-
-    var html = "";
-    html += '<p class="eyebrow gold">Tale of the tape</p>';
-    html += '<h1 class="question">The card is set.</h1>';
-    html += '<div class="tape">' +
-              '<div class="row"><span class="k">Location</span><span class="v">' + c.loc + "</span></div>" +
-              '<div class="row"><span class="k">Warm-up</span><span class="v">' + c.gym + "</span></div>" +
-              '<div class="row"><span class="k">Fuel</span><span class="v">' + c.food + "</span></div>" +
-              '<div class="row"><span class="k">Main card</span><span class="v">' + c.ufc + "</span></div>" +
-            "</div>";
-    html += '<p class="sub">One thing though — I never said whose fight night this was.</p>';
-    html += '<p class="eyebrow gold" style="margin-bottom:8px">Main event</p>';
-    html += '<h1 class="question" style="margin-bottom:20px">Do you want tomorrow to be a date?</h1>';
-    html += '<div class="ask-zone" id="ask">' +
-              '<button class="btn-yes" id="yes">Yes — it\'s a date</button>' +
-              '<button class="btn-no" id="no">no</button>' +
-            "</div>";
-    swap(html, true);
-    setTimeout(wireFinale, 210);
-  }
-
-  function wireFinale() {
-    var yes = document.getElementById("yes");
-    var no  = document.getElementById("no");
-    if (!yes || !no) return;
-    var ask = document.getElementById("ask");
-    var dodges = 0;
-    var taunts = ["no", "you sure?", "really?"];
-    var MAX_DODGE = 3;
-
-    function dodge() {
-      dodges++;
-      var w = ask.clientWidth, h = ask.clientHeight;
-      var nb = no.getBoundingClientRect();
-      no.style.position = "absolute";
-      no.style.left = Math.random() * Math.max(0, w - nb.width) + "px";
-      no.style.top  = Math.random() * Math.max(40, h - nb.height) + "px";
-      no.textContent = taunts[Math.min(dodges, taunts.length - 1)];
-      yes.style.transform = "scale(" + (1 + Math.min(dodges, 4) * 0.05) + ")";
-    }
-    function onNoHover() { if (dodges < MAX_DODGE) dodge(); }
-    function onNoClick(e) {
-      if (dodges < MAX_DODGE) { e.preventDefault(); dodge(); return; }
-      declined(planText(state.chips));
-    }
-
-    no.addEventListener("mouseenter", onNoHover);
-    no.addEventListener("focus", onNoHover);
-    no.addEventListener("click", onNoClick);
-    no.addEventListener("touchstart", function (e) { if (dodges < MAX_DODGE) { e.preventDefault(); dodge(); } }, { passive: false });
-    yes.addEventListener("click", function () { celebrate(planText(state.chips)); });
-  }
-
-  function celebrate(plan) {
+  /* she said yes */
+  function accepted(animate) {
     completed = true;
-    logEvent("yes", { plan: plan });
-    var html = "";
-    html += '<div class="yay">';
-    html += '<p class="eyebrow gold">And still… by unanimous decision</p>';
-    html += '<h1 class="big">It\'s a <em>date.</em></h1>';
-    html += "<p>You booked the whole card yourself, so no rematch clause — the decision stands. Gym, food, fights… official this time.</p>";
-    html += '<span class="seal">See you tomorrow · 🥊</span><br>';
-    html += '<button class="restart" id="restart">↺ run it back</button>';
-    html += "</div>";
-    swap(html, true);
-    trail.innerHTML = "";
+    logEvent("yes", { plan: planText(), answer: "Yes — it's a date" });
+    var html = '<div class="yay">' +
+      '<p class="eyebrow gold">And still… by unanimous decision</p>' +
+      '<h1 class="big">It\'s a <em>date.</em></h1>' +
+      "<p>You booked the whole card yourself — fights, matcha, the works. Everything's on me. No rematch clause; the decision stands.</p>" +
+      '<span class="seal">See you tomorrow · 🥊</span><br>' +
+      '<button class="restart" id="restart">↺ run it back</button></div>';
+    swap(html, animate !== false); setProgress(1);
     setTimeout(wireRestart, 210);
     if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) setTimeout(runConfetti, 210);
   }
 
-  function declined(plan) {
+  /* anything that isn't a yes — respectful close */
+  function renderClose(animate) {
     completed = true;
-    logEvent("no", { plan: plan });
-    var html = "";
-    html += '<div class="yay">';
-    html += '<p class="eyebrow">No contest</p>';
-    html += '<h1 class="big">All good.</h1>';
-    html += "<p>Plan still stands as mates anytime — no pressure at all. Thanks for humouring the little quiz.</p>";
-    html += '<button class="restart" id="restart">↺ run it back</button>';
-    html += "</div>";
-    swap(html, true);
-    trail.innerHTML = "";
+    logEvent("no", { plan: planText(), answer: lastNote() });
+    var html = '<div class="yay">' +
+      '<p class="eyebrow">Noted — and thank you</p>' +
+      '<h1 class="big">Thanks for being real.</h1>' +
+      "<p>That honesty genuinely means a lot, and there's zero pressure either way. Whatever we do next, I'm glad it's with you.</p>" +
+      '<span class="seal">Talk soon.</span><br>' +
+      '<button class="restart" id="restart">↺ run it back</button></div>';
+    swap(html, animate !== false); setProgress(1);
     setTimeout(wireRestart, 210);
   }
 
   function wireRestart() {
     var r = document.getElementById("restart");
     if (r) r.addEventListener("click", function () {
-      completed = false;
-      state = { node: "start", chips: [], history: [] };
+      completed = false; state = { node: "intro1", tape: [], notes: [], history: [], picks: {} };
       SESSION = Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 7);
-      renderNode("start", true);
+      render("intro1", true);
     });
   }
 
   addEventListener("pagehide", function () { if (!completed) logEvent("left"); });
 
-  /* ---------- confetti (red / gold / white) ---------- */
+  /* ---- confetti ---- */
   function runConfetti() {
-    var cv = document.getElementById("confetti");
-    var ctx = cv.getContext("2d");
+    var cv = document.getElementById("confetti"), ctx = cv.getContext("2d");
     var dpr = Math.min(window.devicePixelRatio || 1, 2);
     function size() { cv.width = innerWidth * dpr; cv.height = innerHeight * dpr; }
     size();
-    var colors = ["#E0242B", "#E8C24A", "#FFFFFF", "#A5151B"];
-    var parts = [];
-    for (var i = 0; i < 90; i++) {
-      parts.push({
-        x: Math.random() * cv.width, y: -Math.random() * cv.height * 0.4,
-        r: (5 + Math.random() * 7) * dpr, vy: (2 + Math.random() * 3.2) * dpr,
-        vx: (Math.random() - 0.5) * 2 * dpr, rot: Math.random() * Math.PI,
-        vr: (Math.random() - 0.5) * 0.2, c: colors[i % colors.length]
-      });
-    }
+    var colors = ["#E0242B", "#E8C24A", "#FFFFFF", "#A5151B"], parts = [];
+    for (var i = 0; i < 90; i++) parts.push({
+      x: Math.random() * cv.width, y: -Math.random() * cv.height * 0.4,
+      r: (5 + Math.random() * 7) * dpr, vy: (2 + Math.random() * 3.2) * dpr,
+      vx: (Math.random() - 0.5) * 2 * dpr, rot: Math.random() * Math.PI, vr: (Math.random() - 0.5) * 0.2, c: colors[i % colors.length]
+    });
     var start = Date.now(), fadeStart;
     function frame() {
-      var t = Date.now() - start;
-      ctx.clearRect(0, 0, cv.width, cv.height);
+      var t = Date.now() - start; ctx.clearRect(0, 0, cv.width, cv.height);
       parts.forEach(function (p) {
         p.x += p.vx; p.y += p.vy; p.rot += p.vr; p.vy += 0.02 * dpr;
         if (p.y > cv.height + 40) { p.y = -40; p.x = Math.random() * cv.width; }
@@ -508,16 +538,14 @@
     }
     function fade() {
       if (!fadeStart) fadeStart = Date.now();
-      var k = 1 - (Date.now() - fadeStart) / 1200;
-      ctx.clearRect(0, 0, cv.width, cv.height);
+      var k = 1 - (Date.now() - fadeStart) / 1200; ctx.clearRect(0, 0, cv.width, cv.height);
       if (k > 0) { cv.style.opacity = k; requestAnimationFrame(fade); } else cv.style.opacity = 0;
     }
-    addEventListener("resize", size);
-    frame();
+    addEventListener("resize", size); frame();
   }
 
   logEvent("start");
-  renderNode("start", false);
+  render("intro1", false);
 })();
 </script>
 </body>
