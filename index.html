@@ -389,7 +389,7 @@
     /* ---- Q: where do you stand (soft / heartfelt) ---- */
     clarity: { type: "question", p: .92, key: "clarity", soft: true,
       eyebrow: "Straight up",
-      q: "A lot of people have been noticing, and I've started to notice too… I feel like we've grown into more than a normal friendship. I know we're on different wavelengths, so, for the sake of clarity, I wanted to ask where you stand.",
+      q: "Real quick, no big speech. I think there might be something more than friends here, and I'd rather just know where your head's at than keep guessing. Zero pressure either way.",
       noteKey: "Where she stands",
       next: function (s) { return s.picks.clarity === "yes" ? "dateAsk" : "standing"; },
       options: [
@@ -517,11 +517,11 @@
     var html = "";
     html += '<p class="eyebrow gold">' + node.eyebrow + "</p>";
     html += '<p class="msg">' + node.q + "</p>";
-    html += '<textarea class="tbox area" id="clarityText" rows="3" placeholder="In your own words… (required)"></textarea>';
-    html += '<p class="req" id="clarityReq" hidden>Please fill this in first 🙏</p>';
+    html += '<textarea class="tbox area" id="clarityText" rows="3" placeholder="Say it however you want (required)"></textarea>';
+    html += '<p class="req" id="clarityReq" hidden>Fill this in first 🙏</p>';
     html += '<div class="options" style="margin-top:12px">' +
-              '<button class="opt" id="cYes"><span>Yes — I feel the same way about you 💗</span><span class="go" aria-hidden="true">›</span></button>' +
-              '<button class="opt" id="cNo"><span>No — I care about you, but as a friend</span><span class="go" aria-hidden="true">›</span></button>' +
+              '<button class="opt" id="cYes"><span>Yeah, more than friends</span><span class="go" aria-hidden="true">›</span></button>' +
+              '<button class="opt" id="cNo"><span>Nah, just friends</span><span class="go" aria-hidden="true">›</span></button>' +
             "</div>";
     html += '<button class="back"' + (state.history.length ? "" : " hidden") + ">back</button>";
     swap(html, animate, function () {
@@ -532,8 +532,8 @@
         if (!t) { req.hidden = false; box.focus(); return; }
         state.history.push(snapshot("clarity"));
         state.picks.clarity = val;
-        state.notes.push({ k: "Where she stands", v: (val === "yes" ? "Yes, feels the same" : "No, as friends") + " — " + t });
-        logEvent("answer", { step: "Straight up", choice: (val === "yes" ? "Yes (romantic)" : "No (friends)") + ": " + t });
+        state.notes.push({ k: "Where she stands", v: (val === "yes" ? "More than friends" : "Just friends") + " — " + t });
+        logEvent("answer", { step: "Straight up", choice: (val === "yes" ? "More than friends" : "Just friends") + ": " + t });
         render(val === "yes" ? "dateAsk" : "standing", true);
       }
       card.querySelector("#cYes").addEventListener("click", function () { proceed("yes"); });
