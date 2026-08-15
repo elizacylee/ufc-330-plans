@@ -606,7 +606,7 @@
       rows += '<div class="row"><span class="k">' + (a.start != null ? fmtMin(a.start) : "TBD") + '</span><span class="v">' + a.label + "</span></div>";
     });
     var venue = tapeVal("Watch");
-    rows += '<div class="row"><span class="k">' + (it.anchor != null ? fmtMin(it.anchor) : "TBD") + '</span><span class="v">Watch: ' + FIGHT + (venue ? (" at " + venue) : "") + "</span></div>";
+    rows += '<div class="row"><span class="k">' + (it.anchor != null ? fmtMin(it.anchor) : "TBD") + '</span><span class="v">Watch UFC 330 (starting from ' + FIGHT + ")" + (venue ? (" at " + venue) : "") + "</span></div>";
     return rows;
   }
   function itineraryBlock() { return '<div class="tape itin">' + itinRows() + "</div>"; }
