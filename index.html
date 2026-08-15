@@ -412,7 +412,7 @@
     /* ---- she's unsure / neutral: show the plan, ask if she's still down ---- */
     neutralGo: { type: "question", p: .96, key: "stillGo", recap: true, gold: true, noteKey: "Still going",
       eyebrow: "No pressure",
-      q: "All good, seriously no pressure. Here's the day I had planned either way. Still down to go?",
+      q: "All good, you still down to go?",
       next: function (s) { return s.picks.stillGo === "yes" ? "going" : "close"; },
       options: [
         { value: "yes",   label: "Yeah, I'm down" },
