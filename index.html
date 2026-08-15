@@ -170,6 +170,9 @@
   }
   .tbox::placeholder { color: var(--ink-soft); }
   .tbox:focus { border-color: var(--red); box-shadow: 0 0 0 1px var(--red); }
+  .tbox.area { display: block; width: 100%; min-height: 92px; resize: vertical; line-height: 1.45; }
+  .req { color: var(--red); font-size: 13px; font-weight: 700; letter-spacing: .01em; margin: 8px 0 0; }
+  .req[hidden] { display: none; }
   .confirm {
     flex: none; appearance: none; font: inherit; font-weight: 800; text-transform: uppercase; letter-spacing: .04em;
     font-size: 14px; color: #fff; background: linear-gradient(180deg, var(--red), var(--red-deep));
@@ -433,6 +436,7 @@
   function render(id, animate) {
     if (id === "celebrate") return accepted(animate);
     if (id === "close") return renderClose(animate);
+    if (id === "clarity") return renderClarity(animate);
     var node = NODES[id];
     state.node = id;
     setProgress(node.p);
@@ -501,6 +505,42 @@
       wireBack();
       if (!solo) focusFirst(".opt");
       if (node.recap) refreshDriveTimes();
+    });
+  }
+
+  /* the "where do you stand" slide: explicit yes/no + a required note.
+     A romantic "yes" leads to the date ask; anything else to next-steps. */
+  function renderClarity(animate) {
+    state.node = "clarity";
+    var node = NODES.clarity;
+    setProgress(node.p);
+    var html = "";
+    html += '<p class="eyebrow gold">' + node.eyebrow + "</p>";
+    html += '<p class="msg">' + node.q + "</p>";
+    html += '<textarea class="tbox area" id="clarityText" rows="3" placeholder="In your own words… (required)"></textarea>';
+    html += '<p class="req" id="clarityReq" hidden>Please fill this in first 🙏</p>';
+    html += '<div class="options" style="margin-top:12px">' +
+              '<button class="opt" id="cYes"><span>Yes — I feel the same way about you 💗</span><span class="go" aria-hidden="true">›</span></button>' +
+              '<button class="opt" id="cNo"><span>No — I care about you, but as a friend</span><span class="go" aria-hidden="true">›</span></button>' +
+            "</div>";
+    html += '<button class="back"' + (state.history.length ? "" : " hidden") + ">back</button>";
+    swap(html, animate, function () {
+      var box = card.querySelector("#clarityText");
+      var req = card.querySelector("#clarityReq");
+      function proceed(val) {
+        var t = (box.value || "").trim();
+        if (!t) { req.hidden = false; box.focus(); return; }
+        state.history.push(snapshot("clarity"));
+        state.picks.clarity = val;
+        state.notes.push({ k: "Where she stands", v: (val === "yes" ? "Yes, feels the same" : "No, as friends") + " — " + t });
+        logEvent("answer", { step: "Straight up", choice: (val === "yes" ? "Yes (romantic)" : "No (friends)") + ": " + t });
+        render(val === "yes" ? "dateAsk" : "standing", true);
+      }
+      card.querySelector("#cYes").addEventListener("click", function () { proceed("yes"); });
+      card.querySelector("#cNo").addEventListener("click", function () { proceed("no"); });
+      box.addEventListener("input", function () { req.hidden = true; });
+      wireBack();
+      box.focus();
     });
   }
 
