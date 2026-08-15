@@ -389,7 +389,7 @@
     /* ---- Q: where do you stand (soft / heartfelt) ---- */
     clarity: { type: "question", p: .92, key: "clarity", soft: true,
       eyebrow: "Straight up",
-      q: "Real quick, no big speech. I think there might be something more than friends here, and I'd rather just know where your head's at than keep guessing. Zero pressure either way.",
+      q: "A lot of people have been noticing, and I've started to notice as well. I feel like we've grown into more than a normal friendship, and I know we're on different wavelengths, so I wanted to ask where you stand, for the sake of clarity.",
       noteKey: "Where she stands",
       next: function (s) { return s.picks.clarity === "yes" ? "dateAsk" : "standing"; },
       options: [
@@ -406,6 +406,28 @@
       options: [
         { value: "yes",   emoji: "🥊", label: "Yes" },
         { value: "no",    label: "No" },
+        { value: "other", label: "Other…", input: true }
+      ] },
+
+    /* ---- she's unsure / neutral: show the plan, ask if she's still down ---- */
+    neutralGo: { type: "question", p: .96, key: "stillGo", recap: true, gold: true, noteKey: "Still going",
+      eyebrow: "No pressure",
+      q: "All good, seriously no pressure. Here's the day I had planned either way. Still down to go?",
+      next: function (s) { return s.picks.stillGo === "yes" ? "going" : "close"; },
+      options: [
+        { value: "yes",   label: "Yeah, I'm down" },
+        { value: "no",    label: "Not this time" },
+        { value: "other", label: "Other…", input: true }
+      ] },
+
+    /* ---- she wants to stay friends: acknowledge, show the plan, ask if she still wants to go ---- */
+    friendsGo: { type: "question", p: .96, key: "stillGo", recap: true, noteKey: "Still going",
+      eyebrow: "Understood",
+      q: "I understand, and thank you for being honest. Genuinely no pressure either way. Here's the day I had planned. Still want to go, as friends?",
+      next: function (s) { return s.picks.stillGo === "yes" ? "going" : "close"; },
+      options: [
+        { value: "yes",   label: "Yeah, I'm down" },
+        { value: "no",    label: "Not this time" },
         { value: "other", label: "Other…", input: true }
       ] },
 
@@ -436,6 +458,7 @@
   function render(id, animate) {
     if (id === "celebrate") return accepted(animate);
     if (id === "close") return renderClose(animate);
+    if (id === "going") return renderGoing(animate);
     if (id === "clarity") return renderClarity(animate);
     var node = NODES[id];
     state.node = id;
@@ -519,29 +542,44 @@
     html += '<p class="msg">' + node.q + "</p>";
     html += '<textarea class="tbox area" id="clarityText" rows="3" placeholder="Say it however you want (required)"></textarea>';
     html += '<p class="req" id="clarityReq" hidden>Fill this in first 🙏</p>';
-    html += '<div class="options" style="margin-top:12px">' +
-              '<button class="opt" id="cYes"><span>Yeah, more than friends</span><span class="go" aria-hidden="true">›</span></button>' +
-              '<button class="opt" id="cNo"><span>Nah, just friends</span><span class="go" aria-hidden="true">›</span></button>' +
-            "</div>";
+    html += '<div class="ask-zone" style="margin-top:14px"><button class="btn-yes" id="claritySend">Send ›</button></div>';
     html += '<button class="back"' + (state.history.length ? "" : " hidden") + ">back</button>";
     swap(html, animate, function () {
       var box = card.querySelector("#clarityText");
       var req = card.querySelector("#clarityReq");
-      function proceed(val) {
+      function proceed() {
         var t = (box.value || "").trim();
         if (!t) { req.hidden = false; box.focus(); return; }
+        var stance = classifyStance(t); // "romantic" | "neutral" | "friends"
+        var label = stance === "romantic" ? "More than friends" : (stance === "friends" ? "Just friends" : "Neutral / unsure");
         state.history.push(snapshot("clarity"));
-        state.picks.clarity = val;
-        state.notes.push({ k: "Where she stands", v: (val === "yes" ? "More than friends" : "Just friends") + " — " + t });
-        logEvent("answer", { step: "Straight up", choice: (val === "yes" ? "More than friends" : "Just friends") + ": " + t });
-        render(val === "yes" ? "dateAsk" : "standing", true);
+        state.picks.clarity = stance;
+        state.notes.push({ k: "Where she stands", v: label + " — " + t });
+        logEvent("answer", { step: "Where she stands", choice: label + ": " + t });
+        render(stance === "romantic" ? "dateAsk" : (stance === "friends" ? "friendsGo" : "neutralGo"), true);
       }
-      card.querySelector("#cYes").addEventListener("click", function () { proceed("yes"); });
-      card.querySelector("#cNo").addEventListener("click", function () { proceed("no"); });
+      card.querySelector("#claritySend").addEventListener("click", proceed);
       box.addEventListener("input", function () { req.hidden = true; });
+      box.addEventListener("keydown", function (e) { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); proceed(); } });
       wireBack();
       box.focus();
     });
+  }
+
+  /* Read her free-text answer for what it signals. Longer / negated
+     friend phrases are checked first so "not more than friends" reads as
+     friends, while "more than friends" reads as romantic. Anything we
+     can't place (incl. "we're just close") falls to neutral. */
+  var ROMANTIC = ["more than friends","more than a friend","more than a normal friendship","more than friendship","more than platonic","i like you","i like you too","like you too","i'm into you","im into you","into you too","into you","i have feelings","have feelings for you","feelings for you","catch feelings","caught feelings","catching feelings","developed feelings","feel the same","feel the same way","i feel the same","same way about you","the same about you","i feel that way too","feel that way too","i do too","i want more","want something more","want to be more","be more than friends","want to be with you","be with you","want to date you","date you","go on a date","want to date","let's date","lets date","i'm interested in you","interested in you","i'm interested","attracted to you","attraction","crush on you","a crush on you","i have a crush","yes i do","i love you","love you too","romantic","romantically","mutual feelings","feelings are mutual","falling for you","i'm falling for you"];
+  var FRIENDS = ["just friends","just a friend","just friendship","just want to be friends","just wanna be friends","only friends","only a friend","stay friends","stay as friends","rather be friends","rather stay friends","keep it friends","keep us friends","as friends","as a friend","best friend","best friends","bestfriend","like a brother","like a sister","like a sibling","like family","platonic","friend zone","friendzone","not like that","not that way","not into you","don't feel that way","dont feel that way","don't feel the same","dont feel the same","no feelings","not romantic","not romantically","nothing more than friends","not more than friends","not more than a friend","don't like you like that","dont like you like that","don't see you that way","dont see you that way","value our friendship","love our friendship","just close friends"];
+  var NEUTRAL = ["not sure","unsure","i don't know","i dont know","don't know","dont know","idk","no idea","confused","conflicted","mixed feelings","maybe","perhaps","possibly","kind of","kinda","sort of","we'll see","well see","see where it goes","see where this goes","see where things go","take it slow","take things slow","go slow","need time","need some time","give it time","figure it out","figuring it out","still figuring","hard to say","can't tell","cant tell","on the fence","complicated","it's complicated","its complicated","open to it","open to seeing","don't want to rush","dont want to rush","not yet","close","really close","very close","so close","unusually close","pretty close","we're close","were close"];
+  function classifyStance(raw) {
+    var t = " " + String(raw).toLowerCase().replace(/[^a-z0-9'%\s]/g, " ").replace(/\s+/g, " ").trim() + " ";
+    function has(list) { for (var i = 0; i < list.length; i++) if (t.indexOf(" " + list[i] + " ") >= 0) return true; return false; }
+    if (has(FRIENDS)) return "friends";
+    if (has(ROMANTIC)) return "romantic";
+    if (has(NEUTRAL)) return "neutral";
+    return "neutral";
   }
 
   /* record an answer and advance */
@@ -738,6 +776,19 @@
       refreshDriveTimes();
       if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) runConfetti();
     });
+  }
+
+  /* she's still down to go (neutral / friends path) */
+  function renderGoing(animate) {
+    completed = true; setProgress(1);
+    logEvent("no", { plan: planText(), answer: "Still going: yes" });
+    var html = '<div class="yay">' +
+      '<p class="eyebrow gold">Locked in</p>' +
+      '<h1 class="big">You\'re on.</h1>' +
+      "<p>No labels, no pressure. Same plan, still on me. I'll see you there.</p>" +
+      '<span class="seal">See you tomorrow.</span><br>' +
+      '<button class="restart" id="restart">↺ run it back</button></div>';
+    swap(html, animate !== false, function () { wireRestart(); });
   }
 
   /* anything that isn't a yes: respectful close */
