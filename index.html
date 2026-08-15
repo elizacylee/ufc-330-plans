@@ -280,8 +280,9 @@
     } catch (e) {}
   }
 
-  /* Google Maps search link for a place name/address */
-  function maps(q) { return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q); }
+  /* Google business-listing link (the panel with hours, menu, phone,
+     website, directions). Opens the Google listing on phone and desktop. */
+  function maps(q) { return "https://www.google.com/search?q=" + encodeURIComponent(q); }
 
   /* ============ THE FLOW ============ */
   var NODES = {
@@ -479,7 +480,7 @@
                   (opt.emoji ? '<span class="emoji" aria-hidden="true">' + opt.emoji + "</span>" : "") +
                   "<span>" + opt.label + "</span>" +
                   '<span class="go" aria-hidden="true">›</span></button>';
-        if (opt.link) html += '<a class="maplink" href="' + opt.link + '" target="_blank" rel="noopener">📍 Google ↗</a>';
+        if (opt.link) html += '<a class="maplink" href="' + opt.link + '" target="_blank" rel="noopener">ⓘ Info</a>';
         html += "</div>";
       });
       html += "</div>";
@@ -571,7 +572,7 @@
   function tapeGet(k) { for (var i = 0; i < state.tape.length; i++) if (state.tape[i].k === k) return state.tape[i]; return null; }
   function tapeVal(k) { var t = tapeGet(k); return t ? t.v : ""; }
   function tapePlace(k) { var t = tapeGet(k); return t ? (t.place || "") : ""; }
-  function placeFromLink(link) { if (!link) return ""; var m = /query=([^&]+)/.exec(link); return m ? decodeURIComponent(m[1].replace(/\+/g, " ")) : ""; }
+  function placeFromLink(link) { if (!link) return ""; var m = /[?&](?:query|q)=([^&]+)/.exec(link); return m ? decodeURIComponent(m[1].replace(/\+/g, " ")) : ""; }
 
   function parseTime(s) {
     if (!s) return null;
