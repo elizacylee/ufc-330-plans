@@ -102,6 +102,9 @@
   .poster-card .v { text-align: left; }
   .routes { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 2px; justify-content: center; }
   .maplink.route { padding: 12px 16px; min-height: 44px; }
+  .row.leave .k, .row.leave .v { color: var(--red) !important; font-weight: 800 !important; }
+  .row.watch .v { color: var(--gold) !important; font-weight: 800 !important; }
+  .itin-tag { margin: 8px 2px 0; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-soft); font-weight: 700; text-align: right; }
   .stage { width: 100%; max-width: 540px; display: flex; flex-direction: column; align-items: center; gap: 16px; }
   .masthead {
     display: flex; align-items: center; gap: 10px;
@@ -254,8 +257,8 @@
      want to be seated). Leave blank to hide the times. */
   var WATCH_TIME = "6:00 PM";   // main card start (be seated by this)
   var FIGHT = "Mansur Abdul-Malik vs Dustin Stoltzfus";
-  var DUR = { matcha: 45, gym: 75, eat: 60 };   // minutes at each stop
-  var TRAVEL = 20, TRAVEL_TO_VENUE = 25;        // minutes of travel between stops
+  var DUR = { matcha: 45, gym: 80, eat: 60 };   // minutes at each stop (gym ~1h20)
+  var ARRIVE_BUFFER = 10;       // minutes of cushion to be seated before the fight
 
   var START = HER_NAME ? "walkout" : "intro1";
 
@@ -496,6 +499,7 @@
       }
       wireBack();
       if (!solo) focusFirst(".opt");
+      if (node.recap) refreshDriveTimes();
     });
   }
 
@@ -583,43 +587,87 @@
     return hh + ":" + (m < 10 ? "0" : "") + m + " " + ap;
   }
 
-  /* chronological plan: matcha -> gym -> eat -> watch, timed backward from WATCH_TIME */
-  function itinerary() {
-    var acts = [];
-    var mspot = tapeGet("Matcha spot"), mans = tapeVal("Matcha");
-    if (mspot) acts.push({ label: "Matcha at " + mspot.v, dur: DUR.matcha });
-    else if (mans && mans.toLowerCase() !== "no") acts.push({ label: "Matcha", dur: DUR.matcha });
-    var g = tapeGet("Gym"); if (g) acts.push({ label: "Gym: " + g.v, dur: DUR.gym });
-    var e = tapeGet("Eat"); if (e) acts.push({ label: "Eat: " + e.v, dur: DUR.eat });
+  var ORIGIN = "El Monte, CA";
 
-    var anchor = parseTime(WATCH_TIME);
-    if (anchor != null) {
-      var cursorEnd = anchor - TRAVEL_TO_VENUE;
-      for (var i = acts.length - 1; i >= 0; i--) { acts[i].start = cursorEnd - acts[i].dur; cursorEnd = acts[i].start - TRAVEL; }
-    }
-    return { acts: acts, anchor: anchor };
+  /* the day's stops in order, each with a duration and (if known) a place */
+  function planItems() {
+    var items = [];
+    var mspot = tapeGet("Matcha spot"), mans = tapeVal("Matcha");
+    if (mspot) items.push({ label: "Matcha at " + mspot.v, dur: DUR.matcha, place: mspot.place });
+    else if (mans && mans.toLowerCase() !== "no") items.push({ label: "Matcha", dur: DUR.matcha, place: "" });
+    var g = tapeGet("Gym"); if (g) items.push({ label: "Gym: " + g.v, dur: DUR.gym, place: g.place });
+    var e = tapeGet("Eat"); if (e) items.push({ label: "Eat: " + e.v, dur: DUR.eat, place: e.place });
+    return items;
   }
 
-  function itinRows() {
-    var it = itinerary(), rows = "";
-    it.acts.forEach(function (a) {
-      rows += '<div class="row"><span class="k">' + (a.start != null ? fmtMin(a.start) : "TBD") + '</span><span class="v">' + a.label + "</span></div>";
+  /* geocodable driving stops: El Monte -> placed stops -> venue */
+  function driveStops() {
+    var s = [ORIGIN];
+    planItems().forEach(function (it) { if (it.place) s.push(it.place); });
+    var v = tapePlace("Watch"); if (v) s.push(v);
+    return s;
+  }
+  function fallbackLegs(n) { var a = []; for (var i = 0; i < n; i++) a.push(i === 0 ? 25 : (i === n - 1 ? 25 : 20)); return a; }
+
+  /* forward schedule so we're seated by WATCH_TIME (minus a cushion) */
+  function computeSchedule(legMin) {
+    var items = planItems(), anchor = parseTime(WATCH_TIME), vplace = tapePlace("Watch");
+    if (anchor == null) return null;
+    var placed = 0; items.forEach(function (it) { if (it.place) placed++; });
+    var need = placed + (vplace ? 1 : 0);
+    if (!legMin || legMin.length !== need) legMin = fallbackLegs(need);
+    var totalTravel = 0; legMin.forEach(function (m) { totalTravel += (m || 0); });
+    var totalDur = 0; items.forEach(function (it) { totalDur += it.dur; });
+    var depart = anchor - totalTravel - totalDur - ARRIVE_BUFFER, cur = depart, li = 0, out = { depart: depart, anchor: anchor, items: [] };
+    items.forEach(function (it) {
+      if (it.place) { cur += (legMin[li] || 0); li++; }
+      out.items.push({ label: it.label, start: cur });
+      cur += it.dur;
     });
-    var venue = tapeVal("Watch");
-    rows += '<div class="row"><span class="k">' + (it.anchor != null ? fmtMin(it.anchor) : "TBD") + '</span><span class="v">Watch UFC 330 (starting from ' + FIGHT + ")" + (venue ? (" at " + venue) : "") + "</span></div>";
+    return out;
+  }
+
+  function scheduleRows(sched) {
+    var rows = "", venue = tapeVal("Watch");
+    var watchLabel = "Watch UFC 330 (starting from " + FIGHT + ")" + (venue ? (" at " + venue) : "");
+    if (sched) {
+      rows += '<div class="row leave"><span class="k">' + fmtMin(sched.depart) + '</span><span class="v">🚗 Leave El Monte</span></div>';
+      sched.items.forEach(function (it) { rows += '<div class="row"><span class="k">' + fmtMin(it.start) + '</span><span class="v">' + it.label + "</span></div>"; });
+      rows += '<div class="row watch"><span class="k">' + fmtMin(sched.anchor) + '</span><span class="v">' + watchLabel + "</span></div>";
+    } else {
+      planItems().forEach(function (it) { rows += '<div class="row"><span class="k">TBD</span><span class="v">' + it.label + "</span></div>"; });
+      rows += '<div class="row watch"><span class="k">TBD</span><span class="v">' + watchLabel + "</span></div>";
+    }
     return rows;
   }
-  function itineraryBlock() { return '<div class="tape itin">' + itinRows() + "</div>"; }
+  function itineraryBlock() {
+    return '<div class="tape itin" id="itin">' + scheduleRows(computeSchedule(null)) + "</div>" +
+           '<p class="itin-tag" id="itinTag">Drive times: estimating…</p>';
+  }
+
+  /* pull traffic-aware drive times from the Apps Script and refresh the schedule */
+  function refreshDriveTimes() {
+    if (parseTime(WATCH_TIME) == null || !CONFIG.logEndpoint) return;
+    var stops = driveStops();
+    if (stops.length < 2) return;
+    var url = CONFIG.logEndpoint + "?dir=1&stops=" + encodeURIComponent(JSON.stringify(stops)) + "&t=" + Date.now();
+    fetch(url).then(function (r) { return r.json(); }).then(function (d) {
+      var box = document.getElementById("itin"); if (!box) return;
+      var live = d && d.ok && d.legs && d.legs.indexOf(null) === -1;
+      box.innerHTML = scheduleRows(computeSchedule(live ? d.legs : null));
+      var tag = document.getElementById("itinTag");
+      if (tag) tag.textContent = "Drive times: " + (live ? (d.traffic ? "live traffic" : "Google estimate") : "estimated");
+    }).catch(function () {});
+  }
 
   function routeUrl() {
-    var stops = [];
-    ["Matcha spot", "Gym", "Eat", "Watch"].forEach(function (k) { var p = tapePlace(k); if (p) stops.push(p); });
-    return stops.length ? "https://www.google.com/maps/dir/" + stops.map(encodeURIComponent).join("/") : null;
+    var s = driveStops();
+    return s.length >= 2 ? "https://www.google.com/maps/dir/" + s.map(encodeURIComponent).join("/") : null;
   }
   function routeLinks() {
-    var g = routeUrl(), w = tapePlace("Watch"), html = "";
-    if (g) html += '<a class="maplink route" href="' + g + '" target="_blank" rel="noopener">🗺️ Directions, in order</a>';
-    if (w) html += '<a class="maplink route" href="http://maps.apple.com/?q=' + encodeURIComponent(w) + '" target="_blank" rel="noopener"> Apple Maps</a>';
+    var g = routeUrl(), v = tapePlace("Watch"), html = "";
+    if (g) html += '<a class="maplink route" href="' + g + '" target="_blank" rel="noopener">🗺️ Directions from El Monte, in order</a>';
+    if (v) html += '<a class="maplink route" href="http://maps.apple.com/?saddr=' + encodeURIComponent(ORIGIN) + '&daddr=' + encodeURIComponent(v) + '" target="_blank" rel="noopener"> Apple Maps</a>';
     return html ? '<div class="routes">' + html + "</div>" : "";
   }
 
@@ -638,14 +686,15 @@
         '<p class="poster-kicker">And still… by unanimous decision</p>' +
         '<h1 class="poster-title">It\'s a <span>Date</span></h1>' +
         names +
-        '<div class="poster-card">' + itinRows() + "</div>" +
-        '<p class="poster-foot">Tomorrow · Everything\'s on me</p>' +
+        '<div class="poster-card" id="itin">' + scheduleRows(computeSchedule(null)) + "</div>" +
+        '<p class="poster-foot">Everything\'s on me</p>' +
       "</div>" +
       routeLinks() +
       '<div style="text-align:center"><button class="restart" id="restart">↺ run it back</button></div>';
 
     swap(html, animate !== false, function () {
       wireRestart();
+      refreshDriveTimes();
       if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) runConfetti();
     });
   }

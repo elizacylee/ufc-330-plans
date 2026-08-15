@@ -22,6 +22,46 @@ function fmtTime(date) {
   return Utilities.formatDate(date, TIME_ZONE, TIME_FORMAT);
 }
 
+/**
+ * Traffic-aware driving times between the day's stops.
+ * The page calls this with ?dir=1&stops=<JSON array of places> and gets
+ * back the driving minutes for each leg, using current traffic when Google
+ * provides it. No API key needed (Apps Script's built-in Maps service).
+ */
+function doGet(e) {
+  try {
+    if (e && e.parameter && e.parameter.dir) {
+      var stops = JSON.parse(e.parameter.stops || "[]");
+      var when = new Date(); // current-traffic estimate
+      var legs = [], traffic = false;
+      for (var i = 0; i < stops.length - 1; i++) {
+        var min = null;
+        try {
+          var res = Maps.newDirectionFinder()
+            .setOrigin(stops[i])
+            .setDestination(stops[i + 1])
+            .setMode(Maps.DirectionFinder.Mode.DRIVING)
+            .setDepart(when)
+            .getDirections();
+          var leg = res && res.routes && res.routes[0] && res.routes[0].legs && res.routes[0].legs[0];
+          if (leg) {
+            if (leg.duration_in_traffic && leg.duration_in_traffic.value) { min = Math.round(leg.duration_in_traffic.value / 60); traffic = true; }
+            else if (leg.duration && leg.duration.value) { min = Math.round(leg.duration.value / 60); }
+          }
+        } catch (legErr) { min = null; }
+        legs.push(min);
+      }
+      return jsonOut({ ok: true, legs: legs, traffic: traffic });
+    }
+    return ContentService.createTextOutput("ok");
+  } catch (err) {
+    return jsonOut({ ok: false, error: String(err) });
+  }
+}
+function jsonOut(o) {
+  return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON);
+}
+
 function doPost(e) {
   try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
