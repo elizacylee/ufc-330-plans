@@ -632,7 +632,7 @@
     var rows = "", venue = tapeVal("Watch");
     var watchLabel = "Watch UFC 330 (starting from " + FIGHT + ")" + (venue ? (" at " + venue) : "");
     if (sched) {
-      rows += '<div class="row leave"><span class="k">' + fmtMin(sched.depart) + '</span><span class="v">🚗 Leave El Monte</span></div>';
+      rows += '<div class="row leave"><span class="k">' + fmtMin(sched.depart) + '</span><span class="v">🚗 Leave your house</span></div>';
       sched.items.forEach(function (it) { rows += '<div class="row"><span class="k">' + fmtMin(it.start) + '</span><span class="v">' + it.label + "</span></div>"; });
       rows += '<div class="row watch"><span class="k">' + fmtMin(sched.anchor) + '</span><span class="v">' + watchLabel + "</span></div>";
     } else {
