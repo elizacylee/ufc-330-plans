@@ -423,7 +423,7 @@
     /* ---- she wants to stay friends: acknowledge, show the plan, ask if she still wants to go ---- */
     friendsGo: { type: "question", p: .96, key: "stillGo", recap: true, noteKey: "Still going",
       eyebrow: "Understood",
-      q: "I understand, and thank you for being honest. Genuinely no pressure either way. Here's the day I had planned. Still want to go, as friends?",
+      q: "I understand, and thank you for being honest. Genuinely no pressure either way. Here's the day I had planned. Still want to go?",
       next: function (s) { return s.picks.stillGo === "yes" ? "going" : "close"; },
       options: [
         { value: "yes",   label: "Yeah, I'm down" },
