@@ -540,29 +540,32 @@
     var html = "";
     html += '<p class="eyebrow gold">' + node.eyebrow + "</p>";
     html += '<p class="msg">' + node.q + "</p>";
-    html += '<textarea class="tbox area" id="clarityText" rows="3" placeholder="Say it however you want (required)"></textarea>';
-    html += '<p class="req" id="clarityReq" hidden>Fill this in first 🙏</p>';
-    html += '<div class="ask-zone" style="margin-top:14px"><button class="btn-yes" id="claritySend">Send ›</button></div>';
+    var opts = [
+      { label: "Yeah, I feel it too", stance: "romantic" },
+      { label: "Honestly, not sure yet", stance: "neutral" },
+      { label: "Let's talk about it in person", stance: "neutral" },
+      { label: "I'm good as friends", stance: "friends" }
+    ];
+    html += '<div class="options" style="margin-top:14px">';
+    opts.forEach(function (o, i) {
+      html += '<button class="opt" data-i="' + i + '"><span>' + o.label + '</span><span class="go" aria-hidden="true">›</span></button>';
+    });
+    html += "</div>";
     html += '<button class="back"' + (state.history.length ? "" : " hidden") + ">back</button>";
     swap(html, animate, function () {
-      var box = card.querySelector("#clarityText");
-      var req = card.querySelector("#clarityReq");
-      function proceed() {
-        var t = (box.value || "").trim();
-        if (!t) { req.hidden = false; box.focus(); return; }
-        var stance = classifyStance(t); // "romantic" | "neutral" | "friends"
-        var label = stance === "romantic" ? "More than friends" : (stance === "friends" ? "Just friends" : "Neutral / unsure");
-        state.history.push(snapshot("clarity"));
-        state.picks.clarity = stance;
-        state.notes.push({ k: "Where she stands", v: label + " — " + t });
-        logEvent("answer", { step: "Where she stands", choice: label + ": " + t });
-        render(stance === "romantic" ? "dateAsk" : (stance === "friends" ? "friendsGo" : "neutralGo"), true);
-      }
-      card.querySelector("#claritySend").addEventListener("click", proceed);
-      box.addEventListener("input", function () { req.hidden = true; });
-      box.addEventListener("keydown", function (e) { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); proceed(); } });
+      Array.prototype.forEach.call(card.querySelectorAll(".opt"), function (btn) {
+        btn.addEventListener("click", function () {
+          var o = opts[parseInt(btn.dataset.i, 10)];
+          var label = o.stance === "romantic" ? "More than friends" : (o.stance === "friends" ? "Just friends" : "Neutral / unsure");
+          state.history.push(snapshot("clarity"));
+          state.picks.clarity = o.stance;
+          state.notes.push({ k: "Where she stands", v: label + " — " + o.label });
+          logEvent("answer", { step: "Where she stands", choice: label + ": " + o.label });
+          render(o.stance === "romantic" ? "dateAsk" : (o.stance === "friends" ? "friendsGo" : "neutralGo"), true);
+        });
+      });
       wireBack();
-      box.focus();
+      focusFirst(".opt");
     });
   }
 
