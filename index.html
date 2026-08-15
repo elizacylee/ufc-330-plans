@@ -545,21 +545,25 @@
       { label: "I'm not sure", stance: "neutral" },
       { label: "No", stance: "friends" }
     ];
-    html += '<div class="options" style="margin-top:14px">';
+    html += '<textarea class="tbox area" id="clarityText" rows="2" placeholder="Anything you want to add (optional)"></textarea>';
+    html += '<div class="options" style="margin-top:12px">';
     opts.forEach(function (o, i) {
       html += '<button class="opt" data-i="' + i + '"><span>' + o.label + '</span><span class="go" aria-hidden="true">›</span></button>';
     });
     html += "</div>";
     html += '<button class="back"' + (state.history.length ? "" : " hidden") + ">back</button>";
     swap(html, animate, function () {
+      var box = card.querySelector("#clarityText");
       Array.prototype.forEach.call(card.querySelectorAll(".opt"), function (btn) {
         btn.addEventListener("click", function () {
           var o = opts[parseInt(btn.dataset.i, 10)];
+          var extra = (box.value || "").trim();
           var label = o.stance === "romantic" ? "More than friends" : (o.stance === "friends" ? "Just friends" : "Neutral / unsure");
+          var v = label + " — " + o.label + (extra ? " (" + extra + ")" : "");
           state.history.push(snapshot("clarity"));
           state.picks.clarity = o.stance;
-          state.notes.push({ k: "Where she stands", v: label + " — " + o.label });
-          logEvent("answer", { step: "Where she stands", choice: label + ": " + o.label });
+          state.notes.push({ k: "Where she stands", v: v });
+          logEvent("answer", { step: "Where she stands", choice: v });
           render(o.stance === "romantic" ? "dateAsk" : (o.stance === "friends" ? "friendsGo" : "neutralGo"), true);
         });
       });
