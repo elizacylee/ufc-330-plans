@@ -49,6 +49,59 @@
     animation: shimmer 2.4s ease-in-out infinite;
   }
   @keyframes shimmer { 0% { transform: translateX(-100%); } 60%, 100% { transform: translateX(100%); } }
+
+  /* walkout name */
+  .walkout-name {
+    font-family: "Arial Narrow", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: 800; font-stretch: condensed; text-transform: uppercase; letter-spacing: .01em;
+    font-size: clamp(40px, 13vw, 66px); line-height: .95; margin: 8px 0 2px; color: #fff;
+    text-shadow: 0 0 30px rgba(224,36,43,.45);
+  }
+
+  /* weigh-in reveal: Tale of the Tape rows animate in one at a time */
+  .tape .row { animation: revealRow .5s both; }
+  .tape .row:nth-child(1) { animation-delay: .12s; }
+  .tape .row:nth-child(2) { animation-delay: .27s; }
+  .tape .row:nth-child(3) { animation-delay: .42s; }
+  .tape .row:nth-child(4) { animation-delay: .57s; }
+  .tape .row:nth-child(5) { animation-delay: .72s; }
+  .tape .row:nth-child(6) { animation-delay: .87s; }
+  @keyframes revealRow { from { opacity: 0; transform: translateX(-14px); } to { opacity: 1; transform: none; } }
+
+  /* fight-poster payoff */
+  .poster {
+    border: 1px solid var(--gold); border-radius: 8px; text-align: center;
+    padding: 24px 20px 20px; position: relative; overflow: hidden;
+    background: radial-gradient(120% 90% at 50% 0%, rgba(232,194,74,.12), transparent 60%), linear-gradient(180deg, #17110a, #0d0a06);
+    box-shadow: 0 30px 70px -34px #000, inset 0 0 60px -30px var(--gold);
+    animation: posterIn .6s cubic-bezier(.2,.7,.2,1) both;
+  }
+  @keyframes posterIn { from { opacity: 0; transform: scale(.94); } to { opacity: 1; transform: none; } }
+  .poster-top { display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase; font-size: 11px; color: var(--gold); }
+  .poster-top .oct { color: var(--gold); }
+  .poster-kicker { margin: 18px 0 4px; font-size: 10.5px; letter-spacing: .22em; text-transform: uppercase; color: var(--ink-soft); font-weight: 800; }
+  .poster-title {
+    font-family: "Arial Narrow", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: 800; font-stretch: condensed; text-transform: uppercase; letter-spacing: .01em;
+    font-size: clamp(38px, 12vw, 62px); line-height: .92; margin: 0; color: #fff;
+  }
+  .poster-title span { color: var(--gold); }
+  .poster-names { margin: 12px 0 0; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--ink); font-size: 15px; }
+  .poster-card { margin: 18px 0 4px; border-top: 1px solid rgba(232,194,74,.3); border-bottom: 1px solid rgba(232,194,74,.3); }
+  .poster-card .row { display: flex; justify-content: space-between; gap: 12px; padding: 9px 2px; border-bottom: 1px solid rgba(232,194,74,.12); }
+  .poster-card .row:last-child { border-bottom: none; }
+  .poster-card .k { color: var(--ink-soft); text-transform: uppercase; letter-spacing: .13em; font-weight: 800; font-size: 10.5px; }
+  .poster-card .v { color: var(--ink); font-weight: 700; font-size: 13.5px; text-align: right; }
+  .poster-foot { margin: 16px 0 0; font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); font-weight: 800; }
+
+  /* timed itinerary + directions */
+  .tape.itin .row { align-items: flex-start; }
+  .tape.itin .k { min-width: 72px; font-variant-numeric: tabular-nums; letter-spacing: .01em; color: var(--gold); }
+  .tape.itin .v { text-align: left; flex: 1; }
+  .poster-card .k { min-width: 66px; font-variant-numeric: tabular-nums; }
+  .poster-card .v { text-align: left; }
+  .routes { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 2px; justify-content: center; }
+  .maplink.route { padding: 12px 16px; min-height: 44px; }
   .stage { width: 100%; max-width: 540px; display: flex; flex-direction: column; align-items: center; gap: 16px; }
   .masthead {
     display: flex; align-items: center; gap: 10px;
@@ -190,6 +243,22 @@
   var CONFIG = {
     logEndpoint: "https://script.google.com/macros/s/AKfycbzZ_bFbiscDO0Ymq_of2qAxYXVYJ9nEvUezYMVfgcxI7r0-82brF-sTYUPYA1MWB-DgVw/exec"
   };
+
+  /* Names for the walkout intro + the final poster. Leave HER_NAME blank
+     to skip the walkout slide entirely. */
+  var HER_NAME = "";   // <-- her name or nickname
+  var MY_NAME  = "";   // <-- optional, your name (shown on the poster)
+
+  /* Suggested schedule. WATCH_TIME anchors everything: the time the
+     Mansur Abdul-Malik vs Dustin Stoltzfus fight starts (or when you
+     want to be seated). Leave blank to hide the times. */
+  var WATCH_TIME = "";   // e.g. "6:30 PM"
+  var FIGHT = "Mansur Abdul-Malik vs Dustin Stoltzfus";
+  var DUR = { matcha: 45, gym: 75, eat: 60 };   // minutes at each stop
+  var TRAVEL = 20, TRAVEL_TO_VENUE = 25;        // minutes of travel between stops
+
+  var START = HER_NAME ? "walkout" : "intro1";
+
   var BY = (new URLSearchParams(location.search).get("by") || "her").slice(0, 40);
   var SESSION = Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 7);
   var completed = false;
@@ -213,6 +282,10 @@
 
   /* ============ THE FLOW ============ */
   var NODES = {
+
+    /* ---- walkout (only shown if HER_NAME is set) ---- */
+    walkout: { type: "info", p: .04, big: true, eyebrow: "Now entering the octagon",
+      msg: HER_NAME, sub: "", next: "intro1" },
 
     /* ---- intro slides (no answer, just Continue) ---- */
     intro1: { type: "info", p: .08,
@@ -321,7 +394,7 @@
     /* ---- the ask ---- */
     dateAsk: { type: "question", p: .96, key: "dateAsk", gold: true, recap: true, noteKey: "Date tomorrow",
       eyebrow: "Main event",
-      q: "Can I take you on a date tomorrow, with all this planned?",
+      q: "In that case… can I take you on a date with all this planned?",
       next: function (s) { return s.picks.dateAsk === "yes" ? "celebrate" : "standing"; },
       options: [
         { value: "yes",   emoji: "🥊", label: "Yes" },
@@ -345,7 +418,7 @@
   /* ============ ENGINE ============ */
   var card = document.getElementById("card");
   var fill = document.getElementById("fill");
-  var state = { node: "intro1", tape: [], notes: [], history: [], picks: {} };
+  var state = { node: START, tape: [], notes: [], history: [], picks: {} };
 
   function setProgress(p) { fill.style.width = Math.round((p || 0) * 100) + "%"; }
   function resolve(v) { return (typeof v === "function") ? v(state) : v; }
@@ -367,7 +440,7 @@
   function renderInfo(id, node, animate) {
     var html = "";
     if (node.eyebrow) html += '<p class="eyebrow gold">' + node.eyebrow + "</p>";
-    html += '<p class="msg">' + node.msg + "</p>";
+    html += node.big ? ('<p class="walkout-name">' + node.msg + "</p>") : ('<p class="msg">' + node.msg + "</p>");
     if (node.sub) html += '<p class="sub">' + node.sub + "</p>";
     html += '<div class="ask-zone" style="margin-top:22px"><button class="btn-yes" id="cont">Continue ›</button></div>';
     html += '<button class="back"' + (state.history.length ? "" : " hidden") + ">back</button>";
@@ -390,7 +463,7 @@
     var html = "";
     if (node.eyebrow) html += '<p class="eyebrow' + (node.gold ? " gold" : "") + '">' + node.eyebrow + "</p>";
     html += node.soft ? ('<p class="msg">' + node.q + "</p>") : ('<h1 class="question">' + node.q + "</h1>");
-    if (node.recap) html += tapeBlock();
+    if (node.recap) html += itineraryBlock() + routeLinks();
     if (node.sub) html += '<p class="sub">' + node.sub + "</p>";
 
     if (solo) {
@@ -430,7 +503,7 @@
   function commit(id, node, opt, val) {
     state.history.push(snapshot(id));
     if (node.key) state.picks[node.key] = opt.value;
-    if (node.tapeKey && val) state.tape.push({ k: node.tapeKey, v: val });
+    if (node.tapeKey && val) state.tape.push({ k: node.tapeKey, v: val, place: placeFromLink(opt.link) });
     if (node.noteKey && val) state.notes.push({ k: node.noteKey, v: val });
     logEvent("answer", { step: node.eyebrow || id, choice: val || opt.label });
     render(resolve(node.next), true);
@@ -490,16 +563,87 @@
     return '<div class="tape">' + rows + "</div>";
   }
 
-  /* she said yes */
+  /* ---- schedule + directions ---- */
+  function tapeGet(k) { for (var i = 0; i < state.tape.length; i++) if (state.tape[i].k === k) return state.tape[i]; return null; }
+  function tapeVal(k) { var t = tapeGet(k); return t ? t.v : ""; }
+  function tapePlace(k) { var t = tapeGet(k); return t ? (t.place || "") : ""; }
+  function placeFromLink(link) { if (!link) return ""; var m = /query=([^&]+)/.exec(link); return m ? decodeURIComponent(m[1].replace(/\+/g, " ")) : ""; }
+
+  function parseTime(s) {
+    if (!s) return null;
+    var m = /^\s*(\d{1,2})(?::(\d{2}))?\s*([ap]\.?m\.?)?\s*$/i.exec(s);
+    if (!m) return null;
+    var h = +m[1], min = m[2] ? +m[2] : 0, ap = m[3] ? m[3].toLowerCase()[0] : null;
+    if (ap) { if (h === 12) h = 0; if (ap === "p") h += 12; }
+    return h * 60 + min;
+  }
+  function fmtMin(x) {
+    x = ((x % 1440) + 1440) % 1440;
+    var h = Math.floor(x / 60), m = x % 60, ap = h < 12 ? "AM" : "PM", hh = h % 12; if (hh === 0) hh = 12;
+    return hh + ":" + (m < 10 ? "0" : "") + m + " " + ap;
+  }
+
+  /* chronological plan: matcha -> gym -> eat -> watch, timed backward from WATCH_TIME */
+  function itinerary() {
+    var acts = [];
+    var mspot = tapeGet("Matcha spot"), mans = tapeVal("Matcha");
+    if (mspot) acts.push({ label: "Matcha at " + mspot.v, dur: DUR.matcha });
+    else if (mans && mans.toLowerCase() !== "no") acts.push({ label: "Matcha", dur: DUR.matcha });
+    var g = tapeGet("Gym"); if (g) acts.push({ label: "Gym: " + g.v, dur: DUR.gym });
+    var e = tapeGet("Eat"); if (e) acts.push({ label: "Eat: " + e.v, dur: DUR.eat });
+
+    var anchor = parseTime(WATCH_TIME);
+    if (anchor != null) {
+      var cursorEnd = anchor - TRAVEL_TO_VENUE;
+      for (var i = acts.length - 1; i >= 0; i--) { acts[i].start = cursorEnd - acts[i].dur; cursorEnd = acts[i].start - TRAVEL; }
+    }
+    return { acts: acts, anchor: anchor };
+  }
+
+  function itinRows() {
+    var it = itinerary(), rows = "";
+    it.acts.forEach(function (a) {
+      rows += '<div class="row"><span class="k">' + (a.start != null ? fmtMin(a.start) : "TBD") + '</span><span class="v">' + a.label + "</span></div>";
+    });
+    var venue = tapeVal("Watch");
+    rows += '<div class="row"><span class="k">' + (it.anchor != null ? fmtMin(it.anchor) : "TBD") + '</span><span class="v">Watch: ' + FIGHT + (venue ? (" at " + venue) : "") + "</span></div>";
+    return rows;
+  }
+  function itineraryBlock() { return '<div class="tape itin">' + itinRows() + "</div>"; }
+
+  function routeUrl() {
+    var stops = [];
+    ["Matcha spot", "Gym", "Eat", "Watch"].forEach(function (k) { var p = tapePlace(k); if (p) stops.push(p); });
+    return stops.length ? "https://www.google.com/maps/dir/" + stops.map(encodeURIComponent).join("/") : null;
+  }
+  function routeLinks() {
+    var g = routeUrl(), w = tapePlace("Watch"), html = "";
+    if (g) html += '<a class="maplink route" href="' + g + '" target="_blank" rel="noopener">🗺️ Directions, in order</a>';
+    if (w) html += '<a class="maplink route" href="http://maps.apple.com/?q=' + encodeURIComponent(w) + '" target="_blank" rel="noopener"> Apple Maps</a>';
+    return html ? '<div class="routes">' + html + "</div>" : "";
+  }
+
+  /* she said yes — the fight-poster payoff */
   function accepted(animate) {
     completed = true; setProgress(1);
     logEvent("yes", { plan: planText(), answer: "Yes, it's a date" });
-    var html = '<div class="yay">' +
-      '<p class="eyebrow gold">And still… by unanimous decision</p>' +
-      '<h1 class="big">It\'s a <em>date.</em></h1>' +
-      "<p>You booked the whole card yourself. Fights, matcha, the works. Everything's on me, and the decision stands.</p>" +
-      '<span class="seal">See you tomorrow 🥊</span><br>' +
-      '<button class="restart" id="restart">↺ run it back</button></div>';
+
+    var names = HER_NAME
+      ? '<p class="poster-names">' + (MY_NAME ? (MY_NAME + " &nbsp;×&nbsp; ") : "") + HER_NAME + "</p>"
+      : "";
+
+    var html =
+      '<div class="poster">' +
+        '<div class="poster-top"><span class="oct">◆</span> UFC 330</div>' +
+        '<p class="poster-kicker">And still… by unanimous decision</p>' +
+        '<h1 class="poster-title">It\'s a <span>Date</span></h1>' +
+        names +
+        '<div class="poster-card">' + itinRows() + "</div>" +
+        '<p class="poster-foot">Tomorrow · Everything\'s on me</p>' +
+      "</div>" +
+      routeLinks() +
+      '<div style="text-align:center"><button class="restart" id="restart">↺ run it back</button></div>';
+
     swap(html, animate !== false, function () {
       wireRestart();
       if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) runConfetti();
@@ -522,9 +666,9 @@
   function wireRestart() {
     var r = document.getElementById("restart");
     if (r) r.addEventListener("click", function () {
-      completed = false; state = { node: "intro1", tape: [], notes: [], history: [], picks: {} };
+      completed = false; state = { node: START, tape: [], notes: [], history: [], picks: {} };
       SESSION = Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 7);
-      render("intro1", true);
+      render(START, true);
     });
   }
 
@@ -562,7 +706,7 @@
   }
 
   logEvent("start");
-  render("intro1", false);
+  render(START, false);
 })();
 </script>
 </body>
